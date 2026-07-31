@@ -65,6 +65,23 @@ public partial class ServerListViewModel : ObservableObject
         catch (Exception ex) { StatusMessage = $"删除失败: {ex.Message}"; }
     }
 
+    /// <summary>
+    /// Replace the server in the collection to trigger UI refresh, since ServerConnection is a POCO without INPC.
+    /// </summary>
+    private void RefreshServerInList(ServerConnection server)
+    {
+        var idx = -1;
+        for (int i = 0; i < Servers.Count; i++)
+        {
+            if (Servers[i].Id == server.Id) { idx = i; break; }
+        }
+        if (idx >= 0)
+        {
+            Servers.RemoveAt(idx);
+            Servers.Insert(idx, server);
+        }
+    }
+
     [RelayCommand]
     private async Task TestConnectionAsync(ServerConnection server)
     {
@@ -80,11 +97,13 @@ public partial class ServerListViewModel : ObservableObject
             server.OsInfo = result.Output.Split('\n').LastOrDefault()?.Trim() ?? "Connected";
             server.LastConnectedAt = DateTime.UtcNow;
             await _databaseService.SaveServerAsync(server);
+            RefreshServerInList(server);
             StatusMessage = $"✅ {server.Name} 连接成功 ({result.Duration.TotalSeconds:F1}s)";
         }
         else
         {
             server.IsAvailable = false;
+            RefreshServerInList(server);
             StatusMessage = $"❌ {server.Name} 连接失败: {result.Error}";
         }
         }
