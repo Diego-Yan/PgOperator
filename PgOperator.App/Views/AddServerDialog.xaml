@@ -1,0 +1,66 @@
+<Window x:Class="PgOperator.App.Views.AddServerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="添加服务器" Width="480" Height="520"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" /><RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="SSH 连接配置" FontWeight="Bold" FontSize="15" Margin="0,0,0,12"
+                           Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+
+                <!-- Name -->
+                <TextBlock Text="服务器名称" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                <TextBox materialDesign:HintAssist.Hint="如: prod-db-01" Margin="0,0,0,10"
+                         Text="{Binding Name}"/>
+
+                <!-- Host & Port -->
+                <TextBlock Text="主机地址" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="IP或域名" Text="{Binding Host}" />
+                    <TextBox Grid.Column="2" materialDesign:HintAssist.Hint="SSH端口" Text="{Binding Port}" />
+                </Grid>
+
+                <!-- Username -->
+                <TextBlock Text="SSH用户名" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                <TextBox materialDesign:HintAssist.Hint="如: root" Margin="0,0,0,10" Text="{Binding Username}" />
+
+                <!-- Group -->
+                <TextBlock Text="环境分组" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                <ComboBox materialDesign:HintAssist.Hint="选择环境" Margin="0,0,0,10"
+                          ItemsSource="{Binding Groups}" Text="{Binding Group}" IsEditable="True" />
+
+                <!-- Auth Method -->
+                <TextBlock Text="认证方式" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                <ComboBox materialDesign:HintAssist.Hint="选择认证方式" Margin="0,0,0,10"
+                          ItemsSource="{Binding AuthMethods}" SelectedIndex="{Binding AuthMethodIndex}" />
+
+                <PasswordBox x:Name="PasswordInput" materialDesign:HintAssist.Hint="SSH密码"
+                             Margin="0,0,0,10" PasswordChanged="PasswordInput_PasswordChanged" />
+                <TextBox x:Name="KeyPathInput" materialDesign:HintAssist.Hint="私钥文件路径"
+                         Margin="0,0,0,10" Text="{Binding PrivateKeyPath}" Visibility="Collapsed" />
+                <TextBox x:Name="KeyContentInput" materialDesign:HintAssist.Hint="私钥内容 (PEM格式)"
+                         Margin="0,0,0,10" Text="{Binding PrivateKeyContent}"
+                         TextWrapping="Wrap" AcceptsReturn="True" MinHeight="60" Visibility="Collapsed" />
+                <PasswordBox x:Name="PassphraseInput" materialDesign:HintAssist.Hint="私钥密码短语 (可选)"
+                             Margin="0,0,0,10" PasswordChanged="PassphraseInput_PasswordChanged" />
+
+                <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"
+                           TextWrapping="Wrap" Margin="0,4,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="取消" Style="{StaticResource MaterialDesignFlatButton}" Width="80"
+                    IsCancel="True" Click="CancelButton_Click" />
+            <Button Content="保存" Style="{StaticResource MaterialDesignOutlinedButton}" Width="80"
+                    Margin="8,0,0,0" IsDefault="True" Click="SaveButton_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

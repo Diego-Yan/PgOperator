@@ -1,0 +1,204 @@
+<UserControl x:Class="PgOperator.App.Views.DiagnoseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- [REVIEW-FIX] 统一页头 -->
+        <DockPanel>
+            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click" />
+            <TextBlock Text="一键诊断" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0" />
+            <Button Content="开始诊断" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="12,0,4,0"
+                    Click="DiagnoseButton_Click" IsEnabled="{Binding IsRunning, Converter={StaticResource BoolToInverseConverter}}" />
+            <TextBlock Text="{Binding AiConfigStatus}" VerticalAlignment="Center" Margin="12,0,0,0"
+                       FontSize="11" Foreground="{DynamicResource MaterialDesignBodyLight}" />
+        </DockPanel>
+
+        <TextBlock Grid.Row="1" Text="{Binding StatusMessage}" FontSize="14" FontWeight="SemiBold" Margin="0,8" />
+
+        <TabControl Grid.Row="2">
+            <TabItem Header="诊断结果">
+                <ScrollViewer>
+                    <StackPanel>
+                        <!-- [REVIEW-FIX] 汇总卡片：带颜色徽章显示各级别计数 -->
+                        <Border Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="8"
+                                Padding="16,12" Margin="0,0,0,12" Visibility="{Binding Report, Converter={StaticResource NullToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="诊断汇总" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" />
+                                <WrapPanel>
+                                    <!-- Critical -->
+                                    <Border Background="#FFEBEE" CornerRadius="6" Padding="12,6" Margin="0,0,8,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="● 严重 " FontSize="13" Foreground="#E53935" FontWeight="Bold" />
+                                            <TextBlock Text="{Binding Report.ReportMeta.Critical}" FontSize="18" FontWeight="Bold" Foreground="#E53935" />
+                                        </StackPanel>
+                                    </Border>
+                                    <!-- Warning -->
+                                    <Border Background="#FFF3E0" CornerRadius="6" Padding="12,6" Margin="0,0,8,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="● 警告 " FontSize="13" Foreground="#FB8C00" FontWeight="Bold" />
+                                            <TextBlock Text="{Binding Report.ReportMeta.Warning}" FontSize="18" FontWeight="Bold" Foreground="#FB8C00" />
+                                        </StackPanel>
+                                    </Border>
+                                    <!-- Info -->
+                                    <Border Background="#E3F2FD" CornerRadius="6" Padding="12,6" Margin="0,0,8,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="● 建议 " FontSize="13" Foreground="#1E88E5" FontWeight="Bold" />
+                                            <TextBlock Text="{Binding Report.ReportMeta.Info}" FontSize="18" FontWeight="Bold" Foreground="#1E88E5" />
+                                        </StackPanel>
+                                    </Border>
+                                    <!-- Pass -->
+                                    <Border Background="#E8F5E9" CornerRadius="6" Padding="12,6" Margin="0,0,8,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="● 通过 " FontSize="13" Foreground="#43A047" FontWeight="Bold" />
+                                            <TextBlock Text="{Binding Report.ReportMeta.Pass}" FontSize="18" FontWeight="Bold" Foreground="#43A047" />
+                                        </StackPanel>
+                                    </Border>
+                                </WrapPanel>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource MaterialDesignBodyLight}" Margin="0,4,0,0">
+                                    <Run Text="共 " /><Run Text="{Binding Report.ReportMeta.TotalChecks}" />
+                                    <Run Text=" 项检查 · " /><Run Text="{Binding Report.ReportMeta.Host}" />
+                                    <Run Text=" · " /><Run Text="{Binding Report.ReportMeta.PgVersion}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- [REVIEW-FIX] 诊断项列表：颜色区分级别 + 非 pass 项展开明细 -->
+                        <ItemsControl ItemsSource="{Binding Report.Findings}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="12,8" Margin="0,0,0,6" CornerRadius="6"
+                                            Background="{Binding Severity, Converter={StaticResource SeverityToBackgroundConverter}}"
+                                            BorderBrush="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}"
+                                            BorderThickness="3,0,0,0">
+                                        <StackPanel>
+                                            <!-- 标题行：级别标签 + 检查名称 -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <!-- 级别标签（带颜色） -->
+                                                <Border Grid.Column="0" CornerRadius="4" Padding="8,2" Margin="0,0,8,0"
+                                                        Background="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}">
+                                                    <TextBlock Text="{Binding Severity, Converter={StaticResource SeverityToLabelConverter}}"
+                                                               FontSize="12" FontWeight="Bold" Foreground="White" />
+                                                </Border>
+                                                <!-- 检查标题 -->
+                                                <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="14" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                                <!-- 检查ID -->
+                                                <TextBlock Grid.Column="2" Text="{Binding CheckName}" FontSize="11"
+                                                           Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                                           VerticalAlignment="Center" Margin="8,0,0,0" />
+                                            </Grid>
+
+                                            <!-- [REVIEW-FIX] 明细区域：仅非 pass 项显示 -->
+                                            <StackPanel Visibility="{Binding Severity, Converter={StaticResource SeverityToDetailVisibilityConverter}}"
+                                                        Margin="0,6,0,0">
+                                                <!-- 详情 -->
+                                                <TextBlock Text="{Binding Detail}" FontSize="13" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource MaterialDesignBody}" />
+
+                                                <!-- 影响 -->
+                                                <TextBlock Text="{Binding Impact}" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
+                                                           Foreground="{DynamicResource MaterialDesignBodyLight}" FontStyle="Italic"
+                                                           Visibility="{Binding Impact, Converter={StaticResource StringToVisibilityConverter}}" />
+
+                                                <!-- 建议命令 -->
+                                                <Border Background="{DynamicResource MaterialDesignToolBarBackground}" CornerRadius="4"
+                                                        Padding="8,6" Margin="0,6,0,0"
+                                                        Visibility="{Binding Suggestion, Converter={StaticResource NullToVisibilityConverter}}">
+                                                    <StackPanel>
+                                                        <TextBlock FontSize="11" FontWeight="Bold" Margin="0,0,0,4"
+                                                                   Foreground="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}">
+                                                            <Run Text="修复建议" />
+                                                        </TextBlock>
+                                                        <!-- 建议操作 -->
+                                                        <TextBlock FontSize="12" Margin="0,0,0,4"
+                                                                   Visibility="{Binding Suggestion.Action, Converter={StaticResource StringToVisibilityConverter}}">
+                                                            <Run Text="操作: " FontWeight="Bold" /><Run Text="{Binding Suggestion.Action}" />
+                                                        </TextBlock>
+                                                        <!-- 建议命令列表 -->
+                                                        <ItemsControl ItemsSource="{Binding Suggestion.Commands}" Margin="0,0,0,4">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0">
+                                                                        <Run Text="$ " Foreground="{DynamicResource MaterialDesignBodyLight}" /><Run Text="{Binding Mode=OneWay}" />
+                                                                    </TextBlock>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                        <!-- 风险提示 -->
+                                                        <TextBlock FontSize="11" Margin="0,2,0,0"
+                                                                   Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                                                   Visibility="{Binding Suggestion.Risk, Converter={StaticResource StringToVisibilityConverter}}">
+                                                            <Run Text="风险: " /><Run Text="{Binding Suggestion.Risk}" />
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <!-- 指标数据（如果有） -->
+                                                <TextBlock FontSize="12" Margin="0,4,0,0"
+                                                           Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                                           Visibility="{Binding Metric, Converter={StaticResource NullToVisibilityConverter}}">
+                                                            <Run Text="当前值: " /><Run Text="{Binding Metric.CurrentValue}" />
+                                                            <Run Text=" " /><Run Text="{Binding Metric.Unit}" />
+                                                            <Run Text=" / 阈值: " /><Run Text="{Binding Metric.Threshold}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="AI分析建议">
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding AiResult.Recommendations}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="12" Background="{DynamicResource MaterialDesignCardBackground}"
+                                        CornerRadius="6" Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <WrapPanel Margin="0,0,0,4">
+                                            <TextBlock Text="{Binding Priority}" FontWeight="Bold"
+                                                       Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" Margin="0,0,8,0"/>
+                                            <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Bold" />
+                                        </WrapPanel>
+                                        <TextBlock Text="{Binding RootCause}" Margin="0,4,0,0" TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource MaterialDesignBody}"/>
+                                        <TextBlock Text="{Binding Impact}" TextWrapping="Wrap" Margin="0,2,0,0"
+                                                   Foreground="{DynamicResource MaterialDesignBodyLight}" FontStyle="Italic"/>
+                                        <TextBlock Text="{Binding ActionStepsStr}" Margin="0,4,0,0"
+                                                   FontFamily="Consolas" FontSize="12" TextWrapping="Wrap"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                            <TextBlock FontSize="11" Margin="0,0,12,0"
+                                                       Foreground="{DynamicResource MaterialDesignBodyLight}">
+                                                <Run Text="难度: "/><Run Text="{Binding Difficulty}"/>
+                                            </TextBlock>
+                                            <TextBlock FontSize="11" Margin="0,0,12,0"
+                                                       Foreground="{DynamicResource MaterialDesignBodyLight}">
+                                                <Run Text="风险: "/><Run Text="{Binding Risk}"/>
+                                            </TextBlock>
+                                            <TextBlock FontSize="11"
+                                                       Foreground="{DynamicResource MaterialDesignBodyLight}">
+                                                <Run Text="耗时: "/><Run Text="{Binding EstimatedTime}"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

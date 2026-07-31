@@ -1,0 +1,31 @@
+<UserControl x:Class="PgOperator.App.Views.MaintenanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="12">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <!-- [REVIEW-FIX] 统一页头 + 状态配色 -->
+        <DockPanel>
+            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click"/>
+            <TextBlock Text="日常维护" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0"/>
+            <TextBlock Text="{Binding Status}" VerticalAlignment="Center" Margin="12,0,0,0"
+                       Foreground="{Binding Status, Converter={StaticResource StatusTextToColorConverter}}"
+                       FontWeight="SemiBold" FontSize="12"/>
+        </DockPanel>
+        <StackPanel Grid.Row="1" Margin="0,8">
+            <TextBlock Text="操作类型" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
+            <ComboBox ItemsSource="{Binding VacuumTypes}" SelectedIndex="{Binding VacuumType}" Margin="0,0,0,8"/>
+            <TextBlock Text="目标表 (空=全部)" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
+            <TextBox Text="{Binding TargetTable}" Margin="0,0,0,8"/>
+            <WrapPanel>
+                <Button Content="执行VACUUM" Command="{Binding ExecuteVacuumCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="0,0,8,0"/>
+                <Button Content="执行REINDEX" Command="{Binding ExecuteReindexCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="0,0,8,0"/>
+                <Button Content="执行ANALYZE" Command="{Binding ExecuteAnalyzeCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="0,0,8,0"/>
+                <Button Content="检查表膨胀" Command="{Binding CheckBloatCommand}" Style="{StaticResource MaterialDesignFlatButton}"/>
+            </WrapPanel>
+        </StackPanel>
+        <TextBox Grid.Row="2" Text="{Binding Output}" FontFamily="Consolas" FontSize="12" IsReadOnly="True"
+                 VerticalScrollBarVisibility="Auto" Margin="0,8" Padding="8"
+                 Background="{DynamicResource MaterialDesignCardBackground}"/>
+    </Grid>
+</UserControl>

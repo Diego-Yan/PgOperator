@@ -1,0 +1,32 @@
+<UserControl x:Class="PgOperator.App.Views.ImportExportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="12" Width="500">
+        <StackPanel>
+            <!-- [REVIEW-FIX] 统一页头 -->
+            <DockPanel Margin="0,0,0,12">
+                <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click"/>
+                <TextBlock Text="数据导入导出" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0"/>
+            </DockPanel>
+            <TextBlock Text="表名" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
+            <TextBox Text="{Binding TableName}" Margin="0,0,0,8"/>
+            <TextBlock Text="文件路径" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
+            <TextBox Text="{Binding CsvPath}" Margin="0,0,0,8"/>
+            <TextBlock Text="数据库" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
+            <TextBox Text="{Binding Database}" Margin="0,0,0,8"/>
+            <TextBlock Text="分隔符" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <TextBox Text="{Binding Delimiter}" Width="60"/>
+                <CheckBox Grid.Column="1" Content="包含表头" IsChecked="{Binding WithHeader}" Margin="8,0,0,0"/>
+            </Grid>
+            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                <Button Content="导出CSV" Command="{Binding ExportCsvCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Width="120" Margin="0,0,8,0"/>
+                <Button Content="导入CSV" Command="{Binding ImportCsvCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Width="120"/>
+            </StackPanel>
+            <TextBlock Text="{Binding Status}" Margin="0,8,0,0" FontWeight="SemiBold"/>
+            <TextBox Text="{Binding Output}" FontFamily="Consolas" FontSize="12" IsReadOnly="True" Height="150" Margin="0,8,0,0" Padding="8"
+                     Background="{DynamicResource MaterialDesignCardBackground}" TextWrapping="Wrap"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

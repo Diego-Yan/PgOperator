@@ -1,0 +1,22 @@
+<UserControl x:Class="PgOperator.App.Views.ObjectBrowserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="12">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <!-- [REVIEW-FIX] 统一页头 + 状态配色 -->
+        <DockPanel>
+            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click"/>
+            <TextBlock Text="对象浏览" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0"/>
+            <Button Content="数据库" Command="{Binding ListDatabasesCommand}" Margin="12,0,4,0" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+            <Button Content="表" Command="{Binding ListTablesCommand}" Margin="4,0" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+            <Button Content="索引" Command="{Binding ListIndexesCommand}" Margin="4,0" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+            <Button Content="函数" Command="{Binding ListFunctionsCommand}" Margin="4,0" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+            <TextBlock Text="{Binding Status}" VerticalAlignment="Center" Margin="12,0,0,0"
+                       Foreground="{Binding Status, Converter={StaticResource StatusTextToColorConverter}}" FontSize="12"/>
+        </DockPanel>
+        <TextBox Grid.Row="1" Text="{Binding Output}" FontFamily="Consolas" FontSize="12" IsReadOnly="True"
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,8" Padding="8"
+                 Background="{DynamicResource MaterialDesignCardBackground}"/>
+    </Grid>
+</UserControl>

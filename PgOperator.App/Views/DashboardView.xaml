@@ -1,0 +1,113 @@
+<UserControl x:Class="PgOperator.App.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /><RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- [REVIEW-FIX] 统一页头：返回按钮 + 服务器名 + PG配置状态 -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Height="36"
+                    Content="← 返回服务器列表" Click="BackButton_Click" />
+            <TextBlock Text="{Binding SelectedServer.Name}" FontSize="22" FontWeight="Bold"
+                       VerticalAlignment="Center" Margin="12,0,0,0" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel>
+                <!-- [REVIEW-FIX] 状态卡片：左侧色条 + 状态文字配色 -->
+                <WrapPanel Margin="0,0,0,12">
+                    <Border Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="6" Padding="16,12"
+                            Width="200" Margin="0,0,8,8"
+                            BorderThickness="3,0,0,0"
+                            BorderBrush="{Binding ServerStatus, Converter={StaticResource StatusTextToColorConverter}}">
+                        <StackPanel>
+                            <TextBlock Text="服务状态" FontSize="12" Foreground="{DynamicResource MaterialDesignBodyLight}" />
+                            <TextBlock Text="{Binding ServerStatus}" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"
+                                       Foreground="{Binding ServerStatus, Converter={StaticResource StatusTextToColorConverter}}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="6" Padding="16,12"
+                            Width="200" Margin="0,0,8,8"
+                            BorderThickness="3,0,0,0" BorderBrush="#1E88E5">
+                        <StackPanel>
+                            <TextBlock Text="连接数" FontSize="12" Foreground="{DynamicResource MaterialDesignBodyLight}" />
+                            <TextBlock FontSize="18" FontWeight="Bold" Margin="0,4,0,0"
+                                       Foreground="{DynamicResource MaterialDesignBody}">
+                                <Run Text="{Binding ActiveConnections, Mode=OneWay}" /><Run Text=" / " /><Run Text="{Binding MaxConnections, Mode=OneWay}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="6" Padding="16,12"
+                            Width="200" Margin="0,0,8,8"
+                            BorderThickness="3,0,0,0" BorderBrush="#43A047">
+                        <StackPanel>
+                            <TextBlock Text="复制延迟" FontSize="12" Foreground="{DynamicResource MaterialDesignBodyLight}" />
+                            <TextBlock Text="{Binding ReplicationLag}" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"
+                                       Foreground="{DynamicResource MaterialDesignBody}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="6" Padding="16,12"
+                            Width="200" Margin="0,0,8,8"
+                            BorderThickness="3,0,0,0" BorderBrush="#FB8C00">
+                        <StackPanel>
+                            <TextBlock Text="最后备份" FontSize="12" Foreground="{DynamicResource MaterialDesignBodyLight}" />
+                            <TextBlock Text="{Binding LastBackupTime}" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"
+                                       Foreground="{DynamicResource MaterialDesignBody}" />
+                        </StackPanel>
+                    </Border>
+                </WrapPanel>
+
+                <!-- PG Config Status Bar -->
+                <Border Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="6" Padding="12" Margin="0,0,0,12"
+                        BorderThickness="3,0,0,0"
+                        BorderBrush="{Binding PgConfigStatus, Converter={StaticResource StatusTextToColorConverter}}">
+                    <DockPanel>
+                        <TextBlock Text="{Binding PgConfigStatus}" FontSize="13" VerticalAlignment="Center"
+                                   Foreground="{Binding PgConfigStatus, Converter={StaticResource StatusTextToColorConverter}}" FontWeight="SemiBold"/>
+                        <Button Content="配置PG密码" Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Height="30" FontSize="12" Click="ConfigPgButton_Click" Margin="12,0,0,0"/>
+                    </DockPanel>
+                </Border>
+
+                <!-- Navigation Grid -->
+                <TextBlock Text="功能入口" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12" />
+                <WrapPanel>
+                    <Button Content="📦 PG部署" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="DeployButton_Click" />
+                    <Button Content="🔍 一键诊断" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="DiagnoseButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="💾 备份恢复" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="BackupButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="📊 SQL查询器" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="SqlQueryButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="⚙ 配置管理" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="ConfigButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="👤 用户权限" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="UserMgmtButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="🔄 复制集群" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="ReplicationButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="🔧 日常维护" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="MaintenanceButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="📁 对象浏览" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="ObjectBrowserButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="📥 导入导出" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="ImportExportButton_Click"
+                            IsEnabled="{Binding IsPgConfigured}" />
+                    <Button Content="🤖 AI设置" Width="160" Height="44" Margin="0,0,8,8"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="AiSettingsButton_Click" />
+                </WrapPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
