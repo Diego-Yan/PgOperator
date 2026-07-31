@@ -110,6 +110,12 @@ public class DiagnosticEngine
     {
         var snapshot = new MetricsSnapshot();
 
+        // Fetch max_connections for the prompt (shared across all connection metrics)
+        int maxConnections = 0;
+        var rMax = await ctx.QueryAsync("SHOW max_connections;");
+        if (rMax.Success && int.TryParse(rMax.Output.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var mc))
+            maxConnections = mc;
+
         try
         {
             // Connections
@@ -121,13 +127,20 @@ public class DiagnosticEngine
             if (r.Success)
             {
                 var parts = r.Output.Trim().Split('|');
-                snapshot.Connections = new ConnectionMetrics
+                if (parts.Length >= 3 &&
+                    int.TryParse(parts[0].Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var total) &&
+                    int.TryParse(parts[1].Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var active) &&
+                    int.TryParse(parts[2].Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var idle))
                 {
-                    Total = int.Parse(parts[0].Trim()),
-                    Active = int.Parse(parts[1].Trim()),
-                    Idle = int.Parse(parts[2].Trim()),
-                    IdleInTransaction = parts.Length > 3 ? int.Parse(parts[3].Trim()) : 0
-                };
+                    snapshot.Connections = new ConnectionMetrics
+                    {
+                        Total = total,
+                        Active = active,
+                        Idle = idle,
+                        IdleInTransaction = parts.Length > 3 && int.TryParse(parts[3].Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var iit) ? iit : 0,
+                        Max = maxConnections
+                    };
+                }
             }
 
             // Buffer cache hit ratio

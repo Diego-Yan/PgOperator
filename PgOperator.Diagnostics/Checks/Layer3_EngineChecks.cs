@@ -81,7 +81,8 @@ public class LongRunningTransactionCheck : DiagnosticCheckBase
         if (!r.Success) return Warning("无法检查长事务");
 
         var parts = r.Output.Trim().Split('|');
-        var count = int.Parse(parts[0].Trim());
+        if (!int.TryParse(parts[0].Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var count))
+            return Warning("无法解析长事务计数");
         var maxSec = parts.Length > 1 && int.TryParse(parts[1].Trim(), out var s) ? s : 0;
 
         if (count > 0)
@@ -117,7 +118,8 @@ public class IdleInTransactionCheck : DiagnosticCheckBase
             "WHERE state = 'idle in transaction' AND now()-state_change > interval '5 minutes';");
 
         if (!r.Success) return Warning("无法检查idle-in-transaction会话");
-        var count = int.Parse(r.Output.Trim());
+        if (!int.TryParse(r.Output.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var count))
+            return Warning("无法解析idle-in-transaction计数");
 
         if (count > 3)
             return Warning($"检测到 {count} 个超过5分钟的idle-in-transaction会话",
@@ -401,7 +403,8 @@ public class LockWaitCheck : DiagnosticCheckBase
             "SELECT count(*) FROM pg_stat_activity WHERE wait_event_type = 'Lock';");
 
         if (!r.Success) return Warning("无法获取锁等待信息");
-        var waiting = int.Parse(r.Output.Trim());
+        if (!int.TryParse(r.Output.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var waiting))
+            return Warning("无法解析锁等待计数");
 
         if (waiting > 5)
             return Warning($"检测到 {waiting} 个会话正在等待锁",

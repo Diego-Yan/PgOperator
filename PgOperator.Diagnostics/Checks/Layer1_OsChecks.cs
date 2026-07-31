@@ -166,9 +166,10 @@ public class HugePagesCheck : DiagnosticCheckBase
         var lines = r.Output.Trim().Split('\n');
         if (lines.Length < 2) return Ok("HugePages未配置");
 
-        var total = double.Parse(lines[0]);
-        var free = double.Parse(lines[1]);
-        var size = lines.Length >= 3 ? double.Parse(lines[2]) : 2048;
+        if (!double.TryParse(lines[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var total) ||
+            !double.TryParse(lines[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var free))
+            return Ok("无法解析HugePages信息");
+        var size = lines.Length >= 3 && double.TryParse(lines[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var sz) ? sz : 2048;
 
         if (total == 0)
             return Info("未配置HugePages。PG建议启用huge_pages=on以减少页表开销",

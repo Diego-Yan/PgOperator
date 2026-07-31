@@ -8,11 +8,13 @@ file static class PgSizeParser
     public static double ParsePgSizeToMb(string size)
     {
         size = size.Trim().ToUpper();
-        if (size.EndsWith("GB")) return double.Parse(size[..^2].Trim()) * 1024;
-        if (size.EndsWith("MB")) return double.Parse(size[..^2].Trim());
-        if (size.EndsWith("KB")) return double.Parse(size[..^2].Trim()) / 1024;
-        if (size.EndsWith("TB")) return double.Parse(size[..^2].Trim()) * 1024 * 1024;
-        return double.TryParse(size, out var n) ? n / (1024 * 1024) : 128;
+        var style = System.Globalization.NumberStyles.Float;
+        var culture = System.Globalization.CultureInfo.InvariantCulture;
+        if (size.EndsWith("GB")) return double.TryParse(size[..^2].Trim(), style, culture, out var gb) ? gb * 1024 : 128;
+        if (size.EndsWith("MB")) return double.TryParse(size[..^2].Trim(), style, culture, out var mb) ? mb : 128;
+        if (size.EndsWith("KB")) return double.TryParse(size[..^2].Trim(), style, culture, out var kb) ? kb / 1024 : 128;
+        if (size.EndsWith("TB")) return double.TryParse(size[..^2].Trim(), style, culture, out var tb) ? tb * 1024 * 1024 : 128;
+        return double.TryParse(size, style, culture, out var n) ? n / (1024 * 1024) : 128;
     }
 }
 
@@ -33,16 +35,17 @@ public class SharedBuffersCheck : DiagnosticCheckBase
         if (!r.Success) return Warning("无法获取shared_buffers");
 
         var rMem = await ctx.ExecAsync("free -m | awk 'NR==2{print $2}'");
-        var totalMemMb = rMem.Success ? double.Parse(rMem.Output.Trim()) : 8192;
+        var totalMemMb = rMem.Success && double.TryParse(rMem.Output.Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var tMem) ? tMem : 8192;
         var sbStr = r.Output.Trim();
         var sbMb = PgSizeParser.ParsePgSizeToMb(sbStr);
 
-        var recommended = totalMemMb * 0.25; // 25% for dedicated server
-        if (sbMb < recommended * 0.5)
-            return Warning($"shared_buffers={sbStr} (仅{sbMb:F0}MB)，服务器有{totalMemMb:F0}MB内存，建议至少{recommended * 0.5:F0}MB",
+        var recommended = totalMemMb * 0.25; // 25% for dedicated server — ideal target
+        var minimumRecommended = recommended * 0.5; // warn below 12.5% (half the ideal)
+        if (sbMb < minimumRecommended)
+            return Warning($"shared_buffers={sbStr} (仅{sbMb:F0}MB)，服务器有{totalMemMb:F0}MB内存，建议设为{recommended:F0}MB (25%)，当前仅为{minimumRecommended:F0}MB以下",
                 "缓存命中率低，大量磁盘I/O",
-                new DiagnosticMetric { CurrentValue = sbMb, Unit = "MB", Threshold = recommended * 0.5 },
-                new DiagnosticSuggestion { Action = "increase_shared_buffers", Commands = new() { $"ALTER SYSTEM SET shared_buffers = '{recommended * 0.5:F0}MB';", "需重启PG生效" }, Risk = "中(需重启)" });
+                new DiagnosticMetric { CurrentValue = sbMb, Unit = "MB", Threshold = minimumRecommended },
+                new DiagnosticSuggestion { Action = "increase_shared_buffers", Commands = new() { $"ALTER SYSTEM SET shared_buffers = '{recommended:F0}MB';", "需重启PG生效" }, Risk = "中(需重启)" });
 
         if (sbMb > totalMemMb * 0.4)
             return Warning($"shared_buffers={sbMb:F0}MB 超过物理内存40%，可能导致OOM",
@@ -67,7 +70,7 @@ public class EffectiveCacheSizeCheck : DiagnosticCheckBase
         if (!r.Success) return Warning("无法获取effective_cache_size");
 
         var rMem = await ctx.ExecAsync("free -m | awk 'NR==2{print $7}'");
-        var availMb = rMem.Success ? double.Parse(rMem.Output.Trim()) : 4096;
+        var availMb = rMem.Success && double.TryParse(rMem.Output.Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var aMem) ? aMem : 4096;
         var ecsStr = r.Output.Trim();
         var ecsMb = PgSizeParser.ParsePgSizeToMb(ecsStr);
 
@@ -97,8 +100,8 @@ public class WorkMemCheck : DiagnosticCheckBase
         if (!rWm.Success || !rMc.Success) return Warning("无法获取work_mem或max_connections");
 
         var wmMb = PgSizeParser.ParsePgSizeToMb(rWm.Output.Trim());
-        var maxConn = int.Parse(rMc.Output.Trim());
-        var availMb = rMem.Success ? double.Parse(rMem.Output.Trim()) : 4096;
+        var maxConn = int.TryParse(rMc.Output.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var mc) ? mc : 100;
+        var availMb = rMem.Success && double.TryParse(rMem.Output.Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var am) ? am : 4096;
 
         var safePerConn = availMb / maxConn / 4; // 25% of available per connection
         if (wmMb > safePerConn * 2)
@@ -183,8 +186,8 @@ public class MaxConnectionsCheck : DiagnosticCheckBase
         var rUsed = await ctx.QueryAsync("SELECT count(*) FROM pg_stat_activity;");
 
         if (!rMc.Success) return Warning("无法获取max_connections");
-        var maxConn = int.Parse(rMc.Output.Trim());
-        var used = rUsed.Success ? int.Parse(rUsed.Output.Trim()) : 0;
+        var maxConn = int.TryParse(rMc.Output.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var mxc) ? mxc : 100;
+        var used = rUsed.Success && int.TryParse(rUsed.Output.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var u) ? u : 0;
         var usagePct = (double)used / maxConn * 100;
 
         if (maxConn > 300)
@@ -335,7 +338,10 @@ public class HbaWildcardCheck : DiagnosticCheckBase
         if (!r.Success) return Warning("无法获取pg_hba.conf路径");
 
         var hbaPath = r.Output.Trim();
-        r = await ctx.ExecAsync($"grep -E '^[^#]*0\\.0\\.0\\.0/0|^[^#]*::/0|^[^#]*all.*all.*all' {hbaPath} 2>/dev/null || echo 'NO_WILDCARD'");
+        // Match only 0.0.0.0/0 and ::/0 in the address column — these are the true wildcard patterns.
+        // We intentionally don't match "all" as address since grep can't reliably determine
+        // which column "all" appears in across varying hba_file whitespace formats.
+        r = await ctx.ExecAsync($"grep -E '^[^#]*0\\.0\\.0\\.0/0|^[^#]*::/0' {hbaPath} 2>/dev/null || echo 'NO_WILDCARD'");
 
         if (r.Output.Contains("NO_WILDCARD"))
             return Ok("pg_hba.conf未发现过于宽松的地址规则");

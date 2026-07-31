@@ -25,22 +25,31 @@ public partial class ImportExportViewModel : ObservableObject
     {
         if (_server == null || _pg == null || string.IsNullOrWhiteSpace(TableName)) return;
         IsRunning = true; Status = "导出中...";
-        var header = WithHeader ? "HEADER" : "";
-        // Use SQL COPY (works with psql -c, requires superuser)
-        var sql = $"COPY (SELECT * FROM \"{TableName.Trim()}\") TO '{CsvPath}' WITH (FORMAT CSV, {header} DELIMITER '{Delimiter}');";
-        var r = await _ssh.ExecutePsqlAsync(_server, _pg, sql);
-        Output = r.Success ? $"导出到 {CsvPath}" : $"错误: {r.Error}";
-        Status = r.Success ? "导出完成" : "导出失败"; IsRunning = false;
+        try
+        {
+            var header = WithHeader ? "HEADER" : "";
+            var sql = $"COPY (SELECT * FROM \"{TableName.Trim()}\") TO '{CsvPath}' WITH (FORMAT CSV, {header} DELIMITER '{Delimiter}');";
+            var r = await _ssh.ExecutePsqlAsync(_server, _pg, sql);
+            Output = r.Success ? $"导出到 {CsvPath}" : $"错误: {r.Error}";
+            Status = r.Success ? "导出完成" : "导出失败";
+        }
+        catch (Exception ex) { Status = $"失败: {ex.Message}"; }
+        finally { IsRunning = false; }
     }
 
     [RelayCommand] private async Task ImportCsvAsync()
     {
         if (_server == null || _pg == null || string.IsNullOrWhiteSpace(TableName)) return;
         IsRunning = true; Status = "导入中...";
-        var header = WithHeader ? "HEADER" : "";
-        var sql = $"COPY \"{TableName.Trim()}\" FROM '{CsvPath}' WITH (FORMAT CSV, {header} DELIMITER '{Delimiter}');";
-        var r = await _ssh.ExecutePsqlAsync(_server, _pg, sql);
-        Output = r.Success ? $"从 {CsvPath} 导入到 {TableName}" : $"错误: {r.Error}";
-        Status = r.Success ? "导入完成" : "导入失败"; IsRunning = false;
+        try
+        {
+            var header = WithHeader ? "HEADER" : "";
+            var sql = $"COPY \"{TableName.Trim()}\" FROM '{CsvPath}' WITH (FORMAT CSV, {header} DELIMITER '{Delimiter}');";
+            var r = await _ssh.ExecutePsqlAsync(_server, _pg, sql);
+            Output = r.Success ? $"从 {CsvPath} 导入到 {TableName}" : $"错误: {r.Error}";
+            Status = r.Success ? "导入完成" : "导入失败";
+        }
+        catch (Exception ex) { Status = $"失败: {ex.Message}"; }
+        finally { IsRunning = false; }
     }
 }

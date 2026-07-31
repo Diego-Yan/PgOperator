@@ -269,8 +269,8 @@ public class BackupService
                 return history;
             }
 
-            // Create backup in SSH user's home directory (no sudo needed)
-            var backupDir = "$HOME/pg_backups";
+            // Use the configured backup path (handle ~ expansion like physical backups)
+            var backupDir = job.RemotePath.StartsWith("~") ? "$HOME" + job.RemotePath[1..] : job.RemotePath;
             await _sshService.ExecuteCommandAsync(server, $"mkdir -p {backupDir}", ct);
             var timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
             var db = job.Database ?? instance.Database;
@@ -455,13 +455,21 @@ public class BackupService
         if (!stopResult.Success)
             return new SshResult { Success = false, Error = "无法停止PG服务: " + stopResult.Error };
 
-        // Clear data dir and restore
         var dataDir = instance.DataDirectory ?? "/var/lib/postgresql/16/main";
-        var restoreCmd = $"rm -rf {dataDir}/* && cp -r {request.BackupFilePath}/* {dataDir}/ && " +
-                         $"chown -R postgres:postgres {dataDir} && systemctl start postgresql";
+        try
+        {
+            var restoreCmd = $"rm -rf {dataDir}/* && cp -r {request.BackupFilePath}/* {dataDir}/ && " +
+                             $"chown -R postgres:postgres {dataDir} && systemctl start postgresql";
 
-        var result = await _sshService.ExecuteCommandAsync(server, restoreCmd, ct);
-        return result;
+            var result = await _sshService.ExecuteCommandAsync(server, restoreCmd, ct);
+            return result;
+        }
+        catch
+        {
+            // Don't leave PostgreSQL stopped with a wiped data directory
+            await _sshService.ExecuteCommandAsync(server, "systemctl start postgresql", CancellationToken.None);
+            throw;
+        }
     }
 
     private async Task<SshResult> ExecutePitrRestoreAsync(
@@ -473,16 +481,24 @@ public class BackupService
         if (!stopResult.Success)
             return new SshResult { Success = false, Error = "无法停止PG服务" };
 
-        // Create recovery.signal and configure recovery
-        var targetTime = request.TargetTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "latest";
-        var setupCmd = $"rm -rf {dataDir}/* && " +
-                       $"cp -r {request.BackupFilePath}/* {dataDir}/ && " +
-                       $"touch {dataDir}/recovery.signal && " +
-                       $"echo \"restore_command = 'cp /archive/%f %p'\" >> {dataDir}/postgresql.auto.conf && " +
-                       $"echo \"recovery_target_time = '{targetTime}'\" >> {dataDir}/postgresql.auto.conf && " +
-                       $"chown -R postgres:postgres {dataDir} && systemctl start postgresql";
+        try
+        {
+            var targetTime = request.TargetTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "latest";
+            var setupCmd = $"rm -rf {dataDir}/* && " +
+                           $"cp -r {request.BackupFilePath}/* {dataDir}/ && " +
+                           $"touch {dataDir}/recovery.signal && " +
+                           $"echo \"restore_command = 'cp /archive/%f %p'\" >> {dataDir}/postgresql.auto.conf && " +
+                           $"echo \"recovery_target_time = '{targetTime}'\" >> {dataDir}/postgresql.auto.conf && " +
+                           $"chown -R postgres:postgres {dataDir} && systemctl start postgresql";
 
-        return await _sshService.ExecuteCommandAsync(server, setupCmd, ct);
+            return await _sshService.ExecuteCommandAsync(server, setupCmd, ct);
+        }
+        catch
+        {
+            // Don't leave PostgreSQL stopped with a wiped data directory
+            await _sshService.ExecuteCommandAsync(server, "systemctl start postgresql", CancellationToken.None);
+            throw;
+        }
     }
 
     // ─── Replication Host Fix ──────────────────────────────────

@@ -70,6 +70,10 @@ public class AiAnalysisService
             result.RawResponse = rawResponse;
             return result;
         }
+        catch (OperationCanceledException)
+        {
+            throw; // Propagate cancellation so caller can distinguish timeout from failure
+        }
         catch (Exception ex)
         {
             return new AiAnalysisResult { Error = $"AI分析失败: {ex.Message}" };

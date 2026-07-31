@@ -180,9 +180,13 @@ public partial class BackupViewModel : ObservableObject
         if (_server == null || _pgInstance == null || SelectedFile == null) return;
         if (!SelectedFile.IsLogical) { StatusMessage = "仅逻辑备份(.dump)支持校验"; return; }
         IsRunning = true;
-        var valid = await _backupService.ValidateBackupAsync(_server, _pgInstance, SelectedFile.FilePath);
-        StatusMessage = valid ? $"✅ {SelectedFile.FileName} 校验通过" : $"❌ {SelectedFile.FileName} 校验失败，备份可能损坏！";
-        IsRunning = false;
+        try
+        {
+            var valid = await _backupService.ValidateBackupAsync(_server, _pgInstance, SelectedFile.FilePath);
+            StatusMessage = valid ? $"✅ {SelectedFile.FileName} 校验通过" : $"❌ {SelectedFile.FileName} 校验失败，备份可能损坏！";
+        }
+        catch (Exception ex) { StatusMessage = $"校验失败: {ex.Message}"; }
+        finally { IsRunning = false; }
     }
 
     // ─── PITR ─────────────────────────────────────────────────
