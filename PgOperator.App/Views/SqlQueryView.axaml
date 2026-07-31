@@ -9,11 +9,11 @@
         </Grid.RowDefinitions>
 
         <DockPanel>
-            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click" />
+            <Button Content="← 返回" Click="BackButton_Click" />
             <TextBlock Text="SQL 查询器" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0" />
-            <Button Content="执行 (F5)" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="12,0,4,0"
+            <Button Content="执行 (F5)" Margin="12,0,4,0"
                     Command="{Binding ExecuteQueryCommand}" />
-            <Button Content="EXPLAIN ANALYZE" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="4,0"
+            <Button Content="EXPLAIN ANALYZE" Margin="4,0"
                     Command="{Binding ExplainCurrentCommand}" />
             <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center"
                        Margin="12,0,0,0" Foreground="{DynamicResource MaterialDesignBodyLight}" FontSize="12" />
@@ -21,7 +21,7 @@
 
         <TextBox Grid.Row="1" Text="{Binding SqlText, }"
                  AcceptsReturn="True" FontFamily="Consolas" FontSize="14"
-                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                
                  Margin="0,8" Padding="8"
                  Background="{DynamicResource MaterialDesignCardBackground}"
                  Foreground="{DynamicResource MaterialDesignBody}" />
@@ -36,14 +36,14 @@
         <TabControl Grid.Row="3">
             <TabItem Header="查询结果">
                 <TextBox Text="{Binding QueryResult}" IsReadOnly="True" FontFamily="Consolas" FontSize="13"
-                         VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                        
                          Padding="8"
                          Background="{DynamicResource MaterialDesignCardBackground}"
                          Foreground="{DynamicResource MaterialDesignBody}" />
             </TabItem>
             <TabItem Header="执行计划">
                 <TextBox Text="{Binding ExplainPlan}" IsReadOnly="True" FontFamily="Consolas" FontSize="13"
-                         VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                        
                          Padding="8"
                          Background="{DynamicResource MaterialDesignCardBackground}"
                          Foreground="{DynamicResource MaterialDesignBody}" />

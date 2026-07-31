@@ -9,9 +9,9 @@
 
         <!-- [REVIEW-FIX] 统一页头 -->
         <DockPanel>
-            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click" />
+            <Button Content="← 返回" Click="BackButton_Click" />
             <TextBlock Text="一键诊断" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0" />
-            <Button Content="开始诊断" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="12,0,4,0"
+            <Button Content="开始诊断" Margin="12,0,4,0"
                     Click="DiagnoseButton_Click" IsEnabled="{Binding IsRunning, Converter={StaticResource BoolToInverseConverter}}" />
             <TextBlock Text="{Binding AiConfigStatus}" VerticalAlignment="Center" Margin="12,0,0,0"
                        FontSize="11" Foreground="{DynamicResource MaterialDesignBodyLight}" />
@@ -25,7 +25,7 @@
                     <StackPanel>
                         <!-- [REVIEW-FIX] 汇总卡片：带颜色徽章显示各级别计数 -->
                         <Border Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="8"
-                                Padding="16,12" Margin="0,0,0,12" Visibility="{Binding Report, Converter={StaticResource NullToVisibilityConverter}}">
+                                Padding="16,12" Margin="0,0,0,12" IsVisible="{Binding Report, Converter={StaticResource NullToVisibilityConverter}}">
                             <StackPanel>
                                 <TextBlock Text="诊断汇总" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" />
                                 <WrapPanel>
@@ -98,7 +98,7 @@
                                             </Grid>
 
                                             <!-- [REVIEW-FIX] 明细区域：仅非 pass 项显示 -->
-                                            <StackPanel Visibility="{Binding Severity, Converter={StaticResource SeverityToDetailVisibilityConverter}}"
+                                            <StackPanel IsVisible="{Binding Severity, Converter={StaticResource SeverityToDetailVisibilityConverter}}"
                                                         Margin="0,6,0,0">
                                                 <!-- 详情 -->
                                                 <TextBlock Text="{Binding Detail}" FontSize="13" TextWrapping="Wrap"
@@ -107,12 +107,12 @@
                                                 <!-- 影响 -->
                                                 <TextBlock Text="{Binding Impact}" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
                                                            Foreground="{DynamicResource MaterialDesignBodyLight}" FontStyle="Italic"
-                                                           Visibility="{Binding Impact, Converter={StaticResource StringToVisibilityConverter}}" />
+                                                           IsVisible="{Binding Impact, Converter={StaticResource StringToVisibilityConverter}}" />
 
                                                 <!-- 建议命令 -->
                                                 <Border Background="{DynamicResource MaterialDesignToolBarBackground}" CornerRadius="4"
                                                         Padding="8,6" Margin="0,6,0,0"
-                                                        Visibility="{Binding Suggestion, Converter={StaticResource NullToVisibilityConverter}}">
+                                                        IsVisible="{Binding Suggestion, Converter={StaticResource NullToVisibilityConverter}}">
                                                     <StackPanel>
                                                         <TextBlock FontSize="11" FontWeight="Bold" Margin="0,0,0,4"
                                                                    Foreground="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}">
@@ -120,7 +120,7 @@
                                                         </TextBlock>
                                                         <!-- 建议操作 -->
                                                         <TextBlock FontSize="12" Margin="0,0,0,4"
-                                                                   Visibility="{Binding Suggestion.Action, Converter={StaticResource StringToVisibilityConverter}}">
+                                                                   IsVisible="{Binding Suggestion.Action, Converter={StaticResource StringToVisibilityConverter}}">
                                                             <Run Text="操作: " FontWeight="Bold" /><Run Text="{Binding Suggestion.Action}" />
                                                         </TextBlock>
                                                         <!-- 建议命令列表 -->
@@ -136,7 +136,7 @@
                                                         <!-- 风险提示 -->
                                                         <TextBlock FontSize="11" Margin="0,2,0,0"
                                                                    Foreground="{DynamicResource MaterialDesignBodyLight}"
-                                                                   Visibility="{Binding Suggestion.Risk, Converter={StaticResource StringToVisibilityConverter}}">
+                                                                   IsVisible="{Binding Suggestion.Risk, Converter={StaticResource StringToVisibilityConverter}}">
                                                             <Run Text="风险: " /><Run Text="{Binding Suggestion.Risk}" />
                                                         </TextBlock>
                                                     </StackPanel>
@@ -145,7 +145,7 @@
                                                 <!-- 指标数据（如果有） -->
                                                 <TextBlock FontSize="12" Margin="0,4,0,0"
                                                            Foreground="{DynamicResource MaterialDesignBodyLight}"
-                                                           Visibility="{Binding Metric, Converter={StaticResource NullToVisibilityConverter}}">
+                                                           IsVisible="{Binding Metric, Converter={StaticResource NullToVisibilityConverter}}">
                                                             <Run Text="当前值: " /><Run Text="{Binding Metric.CurrentValue}" />
                                                             <Run Text=" " /><Run Text="{Binding Metric.Unit}" />
                                                             <Run Text=" / 阈值: " /><Run Text="{Binding Metric.Threshold}" />

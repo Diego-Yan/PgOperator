@@ -10,7 +10,7 @@
 
         <!-- [REVIEW-FIX] 统一页头 + 状态配色 -->
         <DockPanel Margin="0,0,0,12">
-            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click"/>
+            <Button Content="← 返回" Click="BackButton_Click"/>
             <TextBlock Text="PG 部署安装" FontSize="22" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0"/>
             <TextBlock Text="{Binding Status}" VerticalAlignment="Center" Margin="12,0,0,0"
                        Foreground="{Binding Status, Converter={StaticResource StatusTextToColorConverter}}"
@@ -65,10 +65,10 @@
         <!-- Action Buttons -->
         <WrapPanel Grid.Row="2" Margin="0,4,0,8">
             <Button Content="🔍 环境检测" Click="CheckEnv_Click"
-                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                   
                     Height="40" Width="130" FontSize="14" Margin="0,0,8,0"/>
             <Button Content="📦 一键安装" Click="InstallPg_Click"
-                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                   
                     Height="40" Width="130" FontSize="14" Margin="0,0,8,0"/>
             <TextBlock Text="先检测 → 确认无误 → 再安装" VerticalAlignment="Center"
                        Foreground="{DynamicResource MaterialDesignBodyLight}" FontSize="12" Margin="8,0,0,0"/>
@@ -76,7 +76,7 @@
 
         <!-- Output Console -->
         <TextBox Grid.Row="3" Text="{Binding Output}" FontFamily="Consolas" FontSize="13"
-                 IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 IsReadOnly="True"
                  Padding="12" BorderThickness="1"
                  BorderBrush="{DynamicResource MaterialDesignDivider}"
                  Background="{DynamicResource MaterialDesignCardBackground}"

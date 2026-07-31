@@ -12,8 +12,8 @@
         <DockPanel Margin="0,0,0,12">
             <TextBlock Text="服务器管理" FontSize="22" FontWeight="Bold" VerticalAlignment="Center" />
             <Button x:Name="AddButton" Content="+" Width="36" Height="36" Margin="12,0,0,0"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                    ToolTip="添加服务器" Click="AddButton_Click" />
+                   
+                    ToolTip.Tip="添加服务器" Click="AddButton_Click" />
             <TextBlock Text="{Binding StatusMessage}" FontSize="13" VerticalAlignment="Center"
                        Foreground="{DynamicResource MaterialDesignBodyLight}" Margin="16,0,0,0" />
         </DockPanel>
@@ -46,16 +46,16 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                <Button Content="测试连接" Style="{StaticResource MaterialDesignOutlinedButton}"
+                                <Button Content="测试连接"
                                         Height="30" FontSize="11" Margin="0,0,4,0"
                                         Command="{Binding DataContext.TestConnectionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding}" />
-                                <Button Content="删除" Style="{StaticResource MaterialDesignFlatButton}"
+                                <Button Content="删除"
                                         Height="30" FontSize="11" Margin="0,0,4,0"
                                         Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"
                                         Command="{Binding DataContext.DeleteServerCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding}" />
-                                <Button Content="▶ 进入" Style="{StaticResource MaterialDesignOutlinedButton}"
+                                <Button Content="▶ 进入"
                                         Height="30" FontSize="12" FontWeight="Bold" MinWidth="70"
                                         Click="EnterButton_Click" Tag="{Binding}" />
                             </StackPanel>

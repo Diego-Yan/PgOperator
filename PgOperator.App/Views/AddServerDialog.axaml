@@ -13,35 +13,35 @@
                 <TextBlock Text="SSH 连接配置" FontWeight="Bold" FontSize="15" Margin="0,0,0,12" />
 
                 <TextBlock Text="服务器名称" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <TextBox Watermark="如: prod-db-01" Margin="0,0,0,10" Text="{Binding Name}"/>
+                <TextBox PlaceholderText="如: prod-db-01" Margin="0,0,0,10" Text="{Binding Name}"/>
 
                 <TextBlock Text="主机地址" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
                 <Grid Margin="0,0,0,10">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Watermark="IP或域名" Text="{Binding Host}" />
-                    <TextBox Grid.Column="2" Watermark="SSH端口" Text="{Binding Port}" />
+                    <TextBox Grid.Column="0" PlaceholderText="IP或域名" Text="{Binding Host}" />
+                    <TextBox Grid.Column="2" PlaceholderText="SSH端口" Text="{Binding Port}" />
                 </Grid>
 
                 <TextBlock Text="SSH用户名" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <TextBox Watermark="如: root" Margin="0,0,0,10" Text="{Binding Username}" />
+                <TextBox PlaceholderText="如: root" Margin="0,0,0,10" Text="{Binding Username}" />
 
                 <TextBlock Text="环境分组" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <ComboBox Watermark="选择环境" Margin="0,0,0,10"
+                <ComboBox PlaceholderText="选择环境" Margin="0,0,0,10"
                           ItemsSource="{Binding Groups}" Text="{Binding Group}" IsEditable="True" />
 
                 <TextBlock Text="认证方式" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <ComboBox Watermark="选择认证方式" Margin="0,0,0,10"
+                <ComboBox PlaceholderText="选择认证方式" Margin="0,0,0,10"
                           ItemsSource="{Binding AuthMethods}" SelectedIndex="{Binding AuthMethodIndex}" />
 
                 <!-- Avalonia 12: use TextBox with PasswordChar instead of PasswordBox -->
-                <TextBox x:Name="PasswordInput" Watermark="SSH密码" PasswordChar="*"
+                <TextBox x:Name="PasswordInput" PlaceholderText="SSH密码" PasswordChar="*"
                          Margin="0,0,0,10" Text="{Binding Password}" />
-                <TextBox x:Name="KeyPathInput" Watermark="私钥文件路径"
+                <TextBox x:Name="KeyPathInput" PlaceholderText="私钥文件路径"
                          Margin="0,0,0,10" Text="{Binding PrivateKeyPath}" IsVisible="False" />
-                <TextBox x:Name="KeyContentInput" Watermark="私钥内容 (PEM格式)"
+                <TextBox x:Name="KeyContentInput" PlaceholderText="私钥内容 (PEM格式)"
                          Margin="0,0,0,10" Text="{Binding PrivateKeyContent}"
                          TextWrapping="Wrap" AcceptsReturn="True" MinHeight="60" IsVisible="False" />
-                <TextBox x:Name="PassphraseInput" Watermark="私钥密码短语 (可选)" PasswordChar="*"
+                <TextBox x:Name="PassphraseInput" PlaceholderText="私钥密码短语 (可选)" PasswordChar="*"
                          Margin="0,0,0,10" Text="{Binding Passphrase}" />
 
                 <TextBlock Text="{Binding StatusMessage}" Foreground="#B00020"

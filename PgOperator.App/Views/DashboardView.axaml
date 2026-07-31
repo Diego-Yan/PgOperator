@@ -9,7 +9,7 @@
 
         <!-- [REVIEW-FIX] 统一页头：返回按钮 + 服务器名 + PG配置状态 -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-            <Button Style="{StaticResource MaterialDesignFlatButton}" Height="36"
+            <Button Height="36"
                     Content="← 返回服务器列表" Click="BackButton_Click" />
             <TextBlock Text="{Binding SelectedServer.Name}" FontSize="22" FontWeight="Bold"
                        VerticalAlignment="Center" Margin="12,0,0,0" />
@@ -67,7 +67,7 @@
                     <DockPanel>
                         <TextBlock Text="{Binding PgConfigStatus}" FontSize="13" VerticalAlignment="Center"
                                    Foreground="{Binding PgConfigStatus, Converter={StaticResource StatusTextToColorConverter}}" FontWeight="SemiBold"/>
-                        <Button Content="配置PG密码" Style="{StaticResource MaterialDesignOutlinedButton}"
+                        <Button Content="配置PG密码"
                                 Height="30" FontSize="12" Click="ConfigPgButton_Click" Margin="12,0,0,0"/>
                     </DockPanel>
                 </Border>
@@ -76,36 +76,36 @@
                 <TextBlock Text="功能入口" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12" />
                 <WrapPanel>
                     <Button Content="📦 PG部署" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="DeployButton_Click" />
+                            Click="DeployButton_Click" />
                     <Button Content="🔍 一键诊断" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="DiagnoseButton_Click"
+                            Click="DiagnoseButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="💾 备份恢复" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="BackupButton_Click"
+                            Click="BackupButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="📊 SQL查询器" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="SqlQueryButton_Click"
+                            Click="SqlQueryButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="⚙ 配置管理" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="ConfigButton_Click"
+                            Click="ConfigButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="👤 用户权限" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="UserMgmtButton_Click"
+                            Click="UserMgmtButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="🔄 复制集群" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="ReplicationButton_Click"
+                            Click="ReplicationButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="🔧 日常维护" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="MaintenanceButton_Click"
+                            Click="MaintenanceButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="📁 对象浏览" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="ObjectBrowserButton_Click"
+                            Click="ObjectBrowserButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="📥 导入导出" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="ImportExportButton_Click"
+                            Click="ImportExportButton_Click"
                             IsEnabled="{Binding IsPgConfigured}" />
                     <Button Content="🤖 AI设置" Width="160" Height="44" Margin="0,0,8,8"
-                            Style="{StaticResource MaterialDesignOutlinedButton}" Click="AiSettingsButton_Click" />
+                            Click="AiSettingsButton_Click" />
                 </WrapPanel>
             </StackPanel>
         </ScrollViewer>

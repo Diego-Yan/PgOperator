@@ -7,10 +7,10 @@
 
         <!-- [REVIEW-FIX] 统一页头 + 状态配色 -->
         <WrapPanel Margin="0,0,0,8">
-            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click"/>
+            <Button Content="← 返回" Click="BackButton_Click"/>
             <TextBlock Text="用户权限" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0"/>
-            <Button Content="刷新" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="12,0,4,0" Click="Refresh_Click"/>
-            <Button Content="撤销Public权限" Style="{StaticResource MaterialDesignFlatButton}" Margin="4,0" FontSize="11" Click="RevokePublic_Click"/>
+            <Button Content="刷新" Margin="12,0,4,0" Click="Refresh_Click"/>
+            <Button Content="撤销Public权限" Margin="4,0" FontSize="11" Click="RevokePublic_Click"/>
             <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" Margin="12,0,0,0"
                        Foreground="{Binding StatusMessage, Converter={StaticResource StatusTextToColorConverter}}" FontSize="12"/>
         </WrapPanel>
@@ -22,7 +22,7 @@
                 <TextBlock Text="{Binding EditName}" VerticalAlignment="Center" FontWeight="Bold" MinWidth="80" Margin="0,0,12,0" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
                 <TextBlock Text="密码:" VerticalAlignment="Center" Margin="0,0,4,0"/>
                 <TextBox Text="{Binding EditPassword, }" Width="120" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                <Button Content="修改密码" Style="{StaticResource MaterialDesignOutlinedButton}" Height="26" FontSize="11" Margin="0,0,12,0" Click="ChangePwd_Click"/>
+                <Button Content="修改密码" Height="26" FontSize="11" Margin="0,0,12,0" Click="ChangePwd_Click"/>
                 <CheckBox Content="超管" IsChecked="{Binding EditSuperuser}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                 <CheckBox Content="建库" IsChecked="{Binding EditCreateDb}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                 <CheckBox Content="建角色" IsChecked="{Binding EditCreateRole}" VerticalAlignment="Center" Margin="0,0,8,0"/>
@@ -30,7 +30,7 @@
                 <CheckBox Content="登录" IsChecked="{Binding EditLogin}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                 <TextBlock Text="有效期:" VerticalAlignment="Center" Margin="0,0,4,0"/>
                 <TextBox Text="{Binding EditValidUntil}" Width="90" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                <Button Content="应用权限" Style="{StaticResource MaterialDesignOutlinedButton}" Height="26" FontSize="11" Click="UpdatePrivs_Click"/>
+                <Button Content="应用权限" Height="26" FontSize="11" Click="UpdatePrivs_Click"/>
             </WrapPanel>
         </Border>
 
@@ -48,7 +48,7 @@
                     <DataGridTextColumn Header="有效期至" Binding="{Binding ValidUntil}" Width="100"/>
                     <DataGridTemplateColumn Width="40">
                         <DataGridTemplateColumn.CellTemplate><DataTemplate>
-                            <Button Content="✕" Foreground="Red" Style="{StaticResource MaterialDesignFlatButton}"
+                            <Button Content="✕" Foreground="Red"
                                     Command="{Binding DataContext.DropRoleCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                     CommandParameter="{Binding}" Height="22" FontSize="12" Padding="4,0"/>
                         </DataTemplate></DataGridTemplateColumn.CellTemplate>
@@ -68,7 +68,7 @@
                     <CheckBox Content="超级用户" IsChecked="{Binding IsSuperuser}" Margin="0,2"/>
                     <CheckBox Content="可建库" IsChecked="{Binding CanCreateDb}" Margin="0,2"/>
                     <CheckBox Content="可建角色" IsChecked="{Binding CanCreateRole}" Margin="0,2"/>
-                    <Button Content="创建" Style="{StaticResource MaterialDesignOutlinedButton}" Height="30" Margin="0,10,0,0" Click="CreateRole_Click"/>
+                    <Button Content="创建" Height="30" Margin="0,10,0,0" Click="CreateRole_Click"/>
                 </StackPanel>
             </Border>
         </Grid>

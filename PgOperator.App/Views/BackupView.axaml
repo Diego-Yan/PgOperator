@@ -7,7 +7,7 @@
 
         <!-- [REVIEW-FIX] 统一页头 + 状态配色 -->
         <DockPanel Margin="0,0,0,8">
-            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click"/>
+            <Button Content="← 返回" Click="BackButton_Click"/>
             <TextBlock Text="备份管理" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0"/>
             <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" Margin="12,0,0,0"
                        Foreground="{Binding StatusMessage, Converter={StaticResource StatusTextToColorConverter}}"
@@ -16,13 +16,13 @@
 
         <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="执行备份">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer>
                     <StackPanel Width="500" Margin="0,8">
                         <Border Background="{DynamicResource MaterialDesignCardBackground}" CornerRadius="6" Padding="12" Margin="0,0,0,12">
                             <StackPanel>
                                 <DockPanel>
                                     <TextBlock Text="磁盘空间检查" FontWeight="SemiBold"/>
-                                    <Button Content="检查" Style="{StaticResource MaterialDesignFlatButton}" Height="28" FontSize="11"
+                                    <Button Content="检查" Height="28" FontSize="11"
                                             Click="CheckDiskSpace_Click" HorizontalAlignment="Right"/>
                                 </DockPanel>
                                 <TextBlock Text="{Binding DiskSpaceInfo}" FontSize="12" Margin="0,4,0,0"/>
@@ -33,7 +33,7 @@
                         <ComboBox ItemsSource="{Binding BackupTypes}" SelectedIndex="{Binding BackupTypeIndex}" Margin="0,0,0,8"/>
                         <TextBlock Text="备份格式" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
                         <ComboBox ItemsSource="{Binding Formats}" SelectedIndex="{Binding FormatIndex}" Margin="0,0,0,8"
-                                  Visibility="{Binding BackupTypeIndex, Converter={StaticResource BoolToZeroVisibilityConverter}}"/>
+                                  IsVisible="{Binding BackupTypeIndex, Converter={StaticResource BoolToZeroVisibilityConverter}}"/>
                         <TextBlock Text="数据库名" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
                         <TextBox Text="{Binding SelectedDatabase}" Margin="0,0,0,8"/>
                         <TextBlock Text="远程备份路径" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
@@ -41,15 +41,15 @@
                         <TextBlock Text="保留天数" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
                         <TextBox Text="{Binding RetentionDays}" Margin="0,0,0,12"/>
 
-                        <Button Content="开始备份" Style="{StaticResource MaterialDesignOutlinedButton}" Height="40"
+                        <Button Content="开始备份" Height="40"
                                 IsEnabled="{Binding IsRunning, Converter={StaticResource BoolToInverseConverter}}" Click="RunBackup_Click"/>
                         <TextBlock Text="{Binding LastBackupInfo}" TextWrapping="Wrap" FontSize="13" Margin="0,8,0,0" FontWeight="SemiBold"/>
                         <Separator Margin="0,16"/>
-                        <Button Content="检查PITR配置" Style="{StaticResource MaterialDesignOutlinedButton}" Click="CheckPitr_Click"/>
+                        <Button Content="检查PITR配置" Click="CheckPitr_Click"/>
                         <TextBlock Text="Sudo密码(修复用)" FontWeight="SemiBold" FontSize="12" Margin="0,12,0,2"/>
                         <Grid Margin="0,0,0,4"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <TextBox Text="{Binding SudoPassword, }" Margin="0,0,4,0"/>
-                            <Button Grid.Column="1" Content="修复物理备份环境" Style="{StaticResource MaterialDesignOutlinedButton}" Click="FixReplication_Click" Height="28" FontSize="11"/>
+                            <Button Grid.Column="1" Content="修复物理备份环境" Click="FixReplication_Click" Height="28" FontSize="11"/>
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -59,16 +59,16 @@
                 <Grid Margin="0,8">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                     <DockPanel Margin="0,0,0,8">
-                        <Button Content="刷新列表" Command="{Binding RefreshFileListCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="0,0,8,0"/>
-                        <Button Content="校验选中" Command="{Binding ValidateSelectedCommand}" Style="{StaticResource MaterialDesignFlatButton}" Margin="0,0,8,0"/>
-                        <Button Content="删除选中" Command="{Binding DeleteSelectedCommand}" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"/>
+                        <Button Content="刷新列表" Command="{Binding RefreshFileListCommand}" Margin="0,0,8,0"/>
+                        <Button Content="校验选中" Command="{Binding ValidateSelectedCommand}" Margin="0,0,8,0"/>
+                        <Button Content="删除选中" Command="{Binding DeleteSelectedCommand}" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"/>
                         <TextBlock Text="{Binding TotalBackupSize, StringFormat='总计: {0}'}" VerticalAlignment="Center" Margin="12,0,0,0" Foreground="{DynamicResource MaterialDesignBodyLight}"/>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Margin="0,0,0,8">
                         <TextBlock Text="清理" VerticalAlignment="Center" Margin="0,0,4,0"/>
                         <TextBox Text="{Binding CleanupDays}" Width="40" Margin="0,0,4,0" HorizontalContentAlignment="Center"/>
                         <TextBlock Text="天前的备份" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <Button Content="执行清理" Command="{Binding CleanupOldBackupsCommand}" Style="{StaticResource MaterialDesignFlatButton}" Height="28" FontSize="12"/>
+                        <Button Content="执行清理" Command="{Binding CleanupOldBackupsCommand}" Height="28" FontSize="12"/>
                     </DockPanel>
                     <DataGrid Grid.Row="2" ItemsSource="{Binding BackupFiles}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedFile}" IsReadOnly="True">
                         <DataGrid.Columns>

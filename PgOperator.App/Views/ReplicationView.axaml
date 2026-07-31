@@ -6,9 +6,9 @@
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
         <!-- [REVIEW-FIX] 统一页头 + 状态配色 -->
         <DockPanel>
-            <Button Content="← 返回" Style="{StaticResource MaterialDesignFlatButton}" Click="BackButton_Click"/>
+            <Button Content="← 返回" Click="BackButton_Click"/>
             <TextBlock Text="复制集群" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0"/>
-            <Button Content="刷新" Command="{Binding RefreshCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="12,0,4,0"/>
+            <Button Content="刷新" Command="{Binding RefreshCommand}" Margin="12,0,4,0"/>
             <TextBlock Text="{Binding Status}" VerticalAlignment="Center" Margin="8,0,0,0"
                        Foreground="{Binding Status, Converter={StaticResource StatusTextToColorConverter}}" FontSize="12"/>
         </DockPanel>
@@ -19,7 +19,7 @@
                     <StackPanel>
                         <TextBlock Text="{Binding SlotInfo}" FontFamily="Consolas" FontSize="12" Margin="0,0,0,8"/>
                         <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <TextBox Watermark="复制槽名称" Text="{Binding CreateSlotName}"/>
+                            <TextBox PlaceholderText="复制槽名称" Text="{Binding CreateSlotName}"/>
                             <Button Grid.Column="1" Content="创建" Command="{Binding CreateSlotCommand}" Margin="4,0,0,0"/>
                         </Grid>
                     </StackPanel>
