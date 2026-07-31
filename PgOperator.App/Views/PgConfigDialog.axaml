@@ -44,10 +44,11 @@
         <!-- Bottom buttons — separated by divider -->
         <Border Grid.Row="1" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0"
                 Padding="0,16,0,0" Margin="0,8,0,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                <Button Content="取消" Width="90" Height="36" IsCancel="True" Click="CancelButton_Click" />
-                <Button Content="保存" Width="90" Height="36" IsDefault="True"
-                        Background="#1E88E5" Foreground="White" Click="SaveButton_Click" />
+            <StackPanel Spacing="8">
+                <Button Content="保存" Height="40" IsDefault="True"
+                        Background="#1E88E5" Foreground="White" FontSize="14" FontWeight="SemiBold"
+                        Click="SaveButton_Click" />
+                <Button Content="取消" Height="36" IsCancel="True" Click="CancelButton_Click" />
             </StackPanel>
         </Border>
     </Grid>
