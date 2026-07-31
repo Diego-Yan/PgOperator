@@ -16,6 +16,19 @@ public partial class ServerListView : UserControl
         Loaded += async (s, e) => await _viewModel.LoadServersCommand.ExecuteAsync(null);
     }
 
+    private async void EditButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is ServerConnection server)
+        {
+            var editVm = App.Services.GetService(typeof(AddServerViewModel)) as AddServerViewModel;
+            editVm!.LoadForEdit(server);
+            var dialog = new AddServerDialog(editVm);
+            await dialog.ShowDialog(TopLevel.GetTopLevel(this) as Window);
+            if (dialog.Result)
+                _ = _viewModel.LoadServersCommand.ExecuteAsync(null);
+        }
+    }
+
     private async void AddButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         var addServerVm = App.Services.GetService(typeof(AddServerViewModel)) as AddServerViewModel;

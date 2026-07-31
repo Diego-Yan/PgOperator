@@ -14,6 +14,7 @@ public partial class AddServerDialog : Window
         InitializeComponent();
         _viewModel = viewModel;
         DataContext = viewModel;
+        Title = viewModel.IsEditMode ? "编辑服务器" : "添加服务器";
 
         viewModel.PropertyChanged += (s, e) =>
         {
@@ -22,6 +23,9 @@ public partial class AddServerDialog : Window
         };
 
         UpdateAuthFieldVisibility();
+
+        if (viewModel.IsEditMode)
+            PasswordInput.PlaceholderText = "留空则保持原密码";
     }
 
     private void UpdateAuthFieldVisibility()

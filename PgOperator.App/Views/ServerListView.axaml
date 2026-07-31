@@ -46,6 +46,9 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content="编辑"
+                                        Height="30" FontSize="11" Margin="0,0,4,0"
+                                        Click="EditButton_Click" Tag="{Binding}" />
                                 <Button Content="测试连接"
                                         Height="30" FontSize="11" Margin="0,0,4,0"
                                         Command="{Binding DataContext.TestConnectionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
