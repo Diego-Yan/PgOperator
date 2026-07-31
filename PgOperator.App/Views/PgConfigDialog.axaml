@@ -1,67 +1,54 @@
 <Window x:Class="PgOperator.App.Views.PgConfigDialog"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        
-        Title="配置PG数据库密码" Width="440" Height="320"
+        Title="配置PG数据库密码" Width="460" Height="380"
         WindowStartupLocation="CenterOwner" CanResize="False">
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/><RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid RowDefinitions="*,Auto" Margin="28,24,28,16">
 
-        <StackPanel>
-            <TextBlock Text="配置 PostgreSQL 数据库连接" FontWeight="Bold" FontSize="16" Margin="0,0,0,16"
-                       Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+        <!-- Form content -->
+        <StackPanel Grid.Row="0" Spacing="10">
+            <Border Background="#F5F5F5" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="PostgreSQL 数据库连接" FontWeight="Bold" FontSize="14" />
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="110"/><ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                    <!-- PG Host & Port -->
+                    <TextBlock Text="PG主机" FontWeight="SemiBold" FontSize="12" />
+                    <Grid ColumnDefinitions="2*,8,*">
+                        <TextBox Grid.Column="0" x:Name="PgHostBox" Text="localhost" />
+                        <TextBox Grid.Column="2" x:Name="PgPortBox" Text="5432" />
+                    </Grid>
 
-                <!-- PG Host -->
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="PG主机" VerticalAlignment="Center"
-                           FontWeight="SemiBold" Margin="0,0,12,10"/>
-                <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" x:Name="PgHostBox" Text="localhost"/>
-                    <TextBox Grid.Column="2" x:Name="PgPortBox" Text="5432"/>
-                </Grid>
+                    <!-- Database -->
+                    <TextBlock Text="数据库名" FontWeight="SemiBold" FontSize="12" />
+                    <TextBox x:Name="DatabaseBox" Text="postgres" />
 
-                <!-- Database -->
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="数据库名" VerticalAlignment="Center"
-                           FontWeight="SemiBold" Margin="0,0,12,10"/>
-                <TextBox Grid.Row="1" Grid.Column="1" x:Name="DatabaseBox" Text="postgres" Margin="0,0,0,10"/>
+                    <!-- Username -->
+                    <TextBlock Text="PG用户名" FontWeight="SemiBold" FontSize="12" />
+                    <TextBox x:Name="UsernameBox" Text="postgres" />
 
-                <!-- Username -->
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="PG用户名" VerticalAlignment="Center"
-                           FontWeight="SemiBold" Margin="0,0,12,10"/>
-                <TextBox Grid.Row="2" Grid.Column="1" x:Name="UsernameBox" Text="postgres" Margin="0,0,0,10"/>
-
-                <!-- Password -->
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="PG密码" VerticalAlignment="Center"
-                           FontWeight="SemiBold" Margin="0,0,12,0"
-                           Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"/>
-                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
-                    <TextBox x:Name="PasswordBox" Width="200" Margin="0,0,8,0"/>
-                    <TextBlock Text="*必填" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"
-                               VerticalAlignment="Center" FontSize="11"/>
+                    <!-- Password -->
+                    <StackPanel Spacing="4">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <TextBlock Text="PG密码" FontWeight="SemiBold" FontSize="12" />
+                            <TextBlock Text="*必填" Foreground="#C62828" FontSize="11" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBox x:Name="PasswordBox" PasswordChar="*" PlaceholderText="输入数据库密码" />
+                    </StackPanel>
                 </StackPanel>
-            </Grid>
+            </Border>
 
-            <TextBlock x:Name="StatusText" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"
-                       TextWrapping="Wrap" FontSize="12" Margin="0,8,0,0"/>
+            <TextBlock x:Name="StatusText" Foreground="#C62828"
+                       TextWrapping="Wrap" FontSize="12" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="取消" Width="80"
-                    IsCancel="True" Click="CancelButton_Click"/>
-            <Button Content="保存" Width="80"
-                    Margin="8,0,0,0" IsDefault="True" Click="SaveButton_Click"/>
-        </StackPanel>
+        <!-- Bottom buttons — separated by divider -->
+        <Border Grid.Row="1" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0"
+                Padding="0,16,0,0" Margin="0,8,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                <Button Content="取消" Width="90" Height="36" IsCancel="True" Click="CancelButton_Click" />
+                <Button Content="保存" Width="90" Height="36" IsDefault="True"
+                        Background="#1E88E5" Foreground="White" Click="SaveButton_Click" />
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

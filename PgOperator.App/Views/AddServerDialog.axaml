@@ -1,57 +1,69 @@
 <Window x:Class="PgOperator.App.Views.AddServerDialog"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Name="DialogWindow" Title="添加服务器" Width="480" Height="520"
+        x:Name="DialogWindow" Title="添加服务器" Width="520" Height="600"
         WindowStartupLocation="CenterOwner" CanResize="False">
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" /><RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <Grid RowDefinitions="*,Auto" Margin="28,24,28,16">
 
-        <ScrollViewer>
-            <StackPanel>
-                <TextBlock Text="SSH 连接配置" FontWeight="Bold" FontSize="15" Margin="0,0,0,12" />
+        <!-- Form content — no scroll, fit the page -->
+        <StackPanel Grid.Row="0" Spacing="10">
+            <!-- ── SSH 连接配置 ── -->
+            <Border Background="#F5F5F5" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="SSH 连接配置" FontWeight="Bold" FontSize="14" />
 
-                <TextBlock Text="服务器名称" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <TextBox PlaceholderText="如: prod-db-01" Margin="0,0,0,10" Text="{Binding Name}"/>
+                    <TextBlock Text="服务器名称" FontWeight="SemiBold" FontSize="12" />
+                    <TextBox PlaceholderText="如: prod-db-01" Text="{Binding Name}" />
 
-                <TextBlock Text="主机地址" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" PlaceholderText="IP或域名" Text="{Binding Host}" />
-                    <TextBox Grid.Column="2" PlaceholderText="SSH端口" Text="{Binding Port}" />
-                </Grid>
+                    <TextBlock Text="主机地址" FontWeight="SemiBold" FontSize="12" />
+                    <Grid ColumnDefinitions="2*,8,*">
+                        <TextBox Grid.Column="0" PlaceholderText="IP或域名" Text="{Binding Host}" />
+                        <TextBox Grid.Column="2" PlaceholderText="SSH端口" Text="{Binding Port}" />
+                    </Grid>
 
-                <TextBlock Text="SSH用户名" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <TextBox PlaceholderText="如: root" Margin="0,0,0,10" Text="{Binding Username}" />
+                    <TextBlock Text="SSH用户名" FontWeight="SemiBold" FontSize="12" />
+                    <TextBox PlaceholderText="如: root" Text="{Binding Username}" />
+                </StackPanel>
+            </Border>
 
-                <TextBlock Text="环境分组" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <ComboBox PlaceholderText="选择环境" Margin="0,0,0,10"
-                          ItemsSource="{Binding Groups}" Text="{Binding Group}" IsEditable="True" />
+            <!-- ── 认证配置 ── -->
+            <Border Background="#F5F5F5" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="认证配置" FontWeight="Bold" FontSize="14" />
 
-                <TextBlock Text="认证方式" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
-                <ComboBox PlaceholderText="选择认证方式" Margin="0,0,0,10"
-                          ItemsSource="{Binding AuthMethods}" SelectedIndex="{Binding AuthMethodIndex}" />
+                    <TextBlock Text="环境分组" FontWeight="SemiBold" FontSize="12" />
+                    <ComboBox PlaceholderText="选择环境"
+                              ItemsSource="{Binding Groups}" Text="{Binding Group}" IsEditable="True" />
 
-                <!-- Avalonia 12: use TextBox with PasswordChar instead of PasswordBox -->
-                <TextBox x:Name="PasswordInput" PlaceholderText="SSH密码" PasswordChar="*"
-                         Margin="0,0,0,10" Text="{Binding Password}" />
-                <TextBox x:Name="KeyPathInput" PlaceholderText="私钥文件路径"
-                         Margin="0,0,0,10" Text="{Binding PrivateKeyPath}" IsVisible="False" />
-                <TextBox x:Name="KeyContentInput" PlaceholderText="私钥内容 (PEM格式)"
-                         Margin="0,0,0,10" Text="{Binding PrivateKeyContent}"
-                         TextWrapping="Wrap" AcceptsReturn="True" MinHeight="60" IsVisible="False" />
-                <TextBox x:Name="PassphraseInput" PlaceholderText="私钥密码短语 (可选)" PasswordChar="*"
-                         Margin="0,0,0,10" Text="{Binding Passphrase}" />
+                    <TextBlock Text="认证方式" FontWeight="SemiBold" FontSize="12" />
+                    <ComboBox PlaceholderText="选择认证方式"
+                              ItemsSource="{Binding AuthMethods}" SelectedIndex="{Binding AuthMethodIndex}" />
 
-                <TextBlock Text="{Binding StatusMessage}" Foreground="#B00020"
-                           TextWrapping="Wrap" Margin="0,4,0,0" />
-            </StackPanel>
-        </ScrollViewer>
+                    <TextBox x:Name="PasswordInput" PlaceholderText="SSH密码" PasswordChar="*"
+                             Text="{Binding Password}" />
+                    <TextBox x:Name="KeyPathInput" PlaceholderText="私钥文件路径"
+                             Text="{Binding PrivateKeyPath}" IsVisible="False" />
+                    <TextBox x:Name="KeyContentInput" PlaceholderText="私钥内容 (PEM格式)"
+                             Text="{Binding PrivateKeyContent}" AcceptsReturn="True"
+                             MinHeight="60" IsVisible="False" />
+                    <TextBox x:Name="PassphraseInput" PlaceholderText="私钥密码短语 (可选)" PasswordChar="*"
+                             Text="{Binding Passphrase}" />
+                </StackPanel>
+            </Border>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="取消" Width="80" IsCancel="True" Click="CancelButton_Click" />
-            <Button Content="保存" Width="80" Margin="8,0,0,0" IsDefault="True" Click="SaveButton_Click" />
+            <!-- Status -->
+            <TextBlock Text="{Binding StatusMessage}" Foreground="#C62828"
+                       TextWrapping="Wrap" FontSize="12" />
         </StackPanel>
+
+        <!-- Bottom buttons — clearly separated from form -->
+        <Border Grid.Row="1" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0"
+                Padding="0,16,0,0" Margin="0,8,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                <Button Content="取消" Width="90" Height="36" IsCancel="True" Click="CancelButton_Click" />
+                <Button Content="保存" Width="90" Height="36" IsDefault="True"
+                        Background="#1E88E5" Foreground="White" Click="SaveButton_Click" />
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
