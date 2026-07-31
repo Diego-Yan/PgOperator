@@ -1,7 +1,7 @@
 <Window x:Class="PgOperator.App.Views.AddServerDialog"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Name="DialogWindow" Title="添加服务器" Width="520" Height="600"
+        x:Name="DialogWindow" Title="添加服务器" Width="520" Height="680"
         WindowStartupLocation="CenterOwner" CanResize="False">
     <Grid RowDefinitions="*,Auto" Margin="28,24,28,16">
 

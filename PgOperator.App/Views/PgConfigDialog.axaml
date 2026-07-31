@@ -1,7 +1,7 @@
 <Window x:Class="PgOperator.App.Views.PgConfigDialog"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="配置PG数据库密码" Width="460" Height="380"
+        Title="配置PG数据库密码" Width="460" Height="430"
         WindowStartupLocation="CenterOwner" CanResize="False">
     <Grid RowDefinitions="*,Auto" Margin="28,24,28,16">
 
