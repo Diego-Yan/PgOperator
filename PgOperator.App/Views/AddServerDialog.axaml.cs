@@ -1,4 +1,5 @@
-using System.Windows;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
 using PgOperator.App.ViewModels;
 
 namespace PgOperator.App.Views;
@@ -6,6 +7,7 @@ namespace PgOperator.App.Views;
 public partial class AddServerDialog : Window
 {
     private readonly AddServerViewModel _viewModel;
+    public bool Result { get; private set; }
 
     public AddServerDialog(AddServerViewModel viewModel)
     {
@@ -24,19 +26,9 @@ public partial class AddServerDialog : Window
 
     private void UpdateAuthFieldVisibility()
     {
-        PasswordInput.Visibility = _viewModel.AuthMethodIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
-        KeyPathInput.Visibility = _viewModel.AuthMethodIndex == 1 ? Visibility.Visible : Visibility.Collapsed;
-        KeyContentInput.Visibility = _viewModel.AuthMethodIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void PasswordInput_PasswordChanged(object sender, RoutedEventArgs e)
-    {
-        _viewModel.Password = PasswordInput.Password;
-    }
-
-    private void PassphraseInput_PasswordChanged(object sender, RoutedEventArgs e)
-    {
-        _viewModel.Passphrase = PassphraseInput.Password;
+        PasswordInput.IsVisible = _viewModel.AuthMethodIndex == 0;
+        KeyPathInput.IsVisible = _viewModel.AuthMethodIndex == 1;
+        KeyContentInput.IsVisible = _viewModel.AuthMethodIndex == 2;
     }
 
     private async void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -44,14 +36,14 @@ public partial class AddServerDialog : Window
         await _viewModel.SaveCommand.ExecuteAsync(null);
         if (_viewModel.SavedSuccessfully)
         {
-            DialogResult = true;
+            Result = true;
             Close();
         }
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
-        DialogResult = false;
+        Result = false;
         Close();
     }
 }

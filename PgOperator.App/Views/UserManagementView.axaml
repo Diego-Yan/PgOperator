@@ -1,7 +1,7 @@
 <UserControl x:Class="PgOperator.App.Views.UserManagementView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+             >
     <Grid Margin="12">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
 
@@ -21,7 +21,7 @@
                 <TextBlock Text="编辑:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0"/>
                 <TextBlock Text="{Binding EditName}" VerticalAlignment="Center" FontWeight="Bold" MinWidth="80" Margin="0,0,12,0" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
                 <TextBlock Text="密码:" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                <TextBox Text="{Binding EditPassword, UpdateSourceTrigger=PropertyChanged}" Width="120" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding EditPassword, }" Width="120" Margin="0,0,4,0" VerticalAlignment="Center"/>
                 <Button Content="修改密码" Style="{StaticResource MaterialDesignOutlinedButton}" Height="26" FontSize="11" Margin="0,0,12,0" Click="ChangePwd_Click"/>
                 <CheckBox Content="超管" IsChecked="{Binding EditSuperuser}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                 <CheckBox Content="建库" IsChecked="{Binding EditCreateDb}" VerticalAlignment="Center" Margin="0,0,8,0"/>
@@ -60,9 +60,9 @@
                 <StackPanel>
                     <TextBlock Text="创建用户" FontWeight="Bold" Margin="0,0,0,10"/>
                     <TextBlock Text="用户名" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
-                    <TextBox Text="{Binding NewRoleName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8"/>
+                    <TextBox Text="{Binding NewRoleName, }" Margin="0,0,0,8"/>
                     <TextBlock Text="密码" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
-                    <TextBox Text="{Binding NewRolePassword, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8"/>
+                    <TextBox Text="{Binding NewRolePassword, }" Margin="0,0,0,8"/>
                     <TextBlock Text="权限" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,2"/>
                     <CheckBox Content="允许登录" IsChecked="{Binding IsLoginRole}" Margin="0,2"/>
                     <CheckBox Content="超级用户" IsChecked="{Binding IsSuperuser}" Margin="0,2"/>

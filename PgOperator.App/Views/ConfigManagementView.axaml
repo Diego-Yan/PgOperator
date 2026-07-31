@@ -1,7 +1,7 @@
 <UserControl x:Class="PgOperator.App.Views.ConfigManagementView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+             >
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
@@ -39,14 +39,14 @@
         <!-- Config Editor -->
         <TabControl Grid.Row="2">
             <TabItem Header="postgresql.conf" IsSelected="True">
-                <TextBox Text="{Binding ConfigContent, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding ConfigContent, }"
                          AcceptsReturn="True" FontFamily="Consolas" FontSize="13"
                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                          Padding="8" TextChanged="ConfigText_Changed"
                          Background="{DynamicResource MaterialDesignCardBackground}" />
             </TabItem>
             <TabItem Header="pg_hba.conf">
-                <TextBox Text="{Binding HbaContent, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding HbaContent, }"
                          AcceptsReturn="True" FontFamily="Consolas" FontSize="13"
                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                          Padding="8"

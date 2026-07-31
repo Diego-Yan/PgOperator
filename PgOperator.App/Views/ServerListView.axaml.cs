@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+using Avalonia.Controls;
 using PgOperator.App.ViewModels;
 using PgOperator.Core.Models;
 
@@ -16,15 +16,16 @@ public partial class ServerListView : UserControl
         Loaded += async (s, e) => await _viewModel.LoadServersCommand.ExecuteAsync(null);
     }
 
-    private void AddButton_Click(object sender, System.Windows.RoutedEventArgs e)
+    private async void AddButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         var addServerVm = App.Services.GetService(typeof(AddServerViewModel)) as AddServerViewModel;
-        var dialog = new AddServerDialog(addServerVm!) { Owner = System.Windows.Window.GetWindow(this) };
-        if (dialog.ShowDialog() == true)
+        var dialog = new AddServerDialog(addServerVm!);
+        await dialog.ShowDialog(TopLevel.GetTopLevel(this) as Window);
+        if (dialog.Result)
             _ = _viewModel.LoadServersCommand.ExecuteAsync(null);
     }
 
-    private void EnterButton_Click(object sender, System.Windows.RoutedEventArgs e)
+    private void EnterButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is ServerConnection server)
             NavigateToDashboard(server);

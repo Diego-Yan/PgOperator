@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+using Avalonia.Controls;
 using PgOperator.App.ViewModels;
 using PgOperator.Core.Models;
 
@@ -21,22 +21,22 @@ public partial class UserManagementView : UserControl
             _vm.SelectRole(role);
     }
 
-    private async void ChangePwd_Click(object sender, System.Windows.RoutedEventArgs e)
+    private async void ChangePwd_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         => await _vm.ChangePasswordCommand.ExecuteAsync(null);
 
-    private async void UpdatePrivs_Click(object sender, System.Windows.RoutedEventArgs e)
+    private async void UpdatePrivs_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         => await _vm.UpdatePrivilegesCommand.ExecuteAsync(null);
 
-    private async void CreateRole_Click(object sender, System.Windows.RoutedEventArgs e)
+    private async void CreateRole_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         => await _vm.CreateRoleCommand.ExecuteAsync(null);
 
-    private async void RevokePublic_Click(object sender, System.Windows.RoutedEventArgs e)
+    private async void RevokePublic_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         => await _vm.RevokePublicSchemaCommand.ExecuteAsync(null);
 
-    private async void Refresh_Click(object sender, System.Windows.RoutedEventArgs e)
+    private async void Refresh_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         => await _vm.LoadRolesCommand.ExecuteAsync(null);
 
-    private void BackButton_Click(object sender, System.Windows.RoutedEventArgs e)
+    private void BackButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         var mainVm = App.Services.GetService(typeof(MainViewModel)) as MainViewModel;
         mainVm?.NavigateTo(App.Services.GetService(typeof(DashboardView))!);

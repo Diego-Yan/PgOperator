@@ -20,12 +20,6 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
   </ItemGroup>
 
-  <!-- Temporarily exclude WPF views during migration -->
-  <ItemGroup>
-    <Compile Remove="Views/**/*.xaml.cs" />
-    <None Remove="Views/**/*.xaml" />
-  </ItemGroup>
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>

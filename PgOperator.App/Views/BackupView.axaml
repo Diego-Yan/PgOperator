@@ -1,7 +1,7 @@
 <UserControl x:Class="PgOperator.App.Views.BackupView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+             >
     <Grid Margin="12">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
 
@@ -48,7 +48,7 @@
                         <Button Content="检查PITR配置" Style="{StaticResource MaterialDesignOutlinedButton}" Click="CheckPitr_Click"/>
                         <TextBlock Text="Sudo密码(修复用)" FontWeight="SemiBold" FontSize="12" Margin="0,12,0,2"/>
                         <Grid Margin="0,0,0,4"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <TextBox Text="{Binding SudoPassword, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,4,0"/>
+                            <TextBox Text="{Binding SudoPassword, }" Margin="0,0,4,0"/>
                             <Button Grid.Column="1" Content="修复物理备份环境" Style="{StaticResource MaterialDesignOutlinedButton}" Click="FixReplication_Click" Height="28" FontSize="11"/>
                         </Grid>
                     </StackPanel>

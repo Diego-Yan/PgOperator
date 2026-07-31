@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+using Avalonia.Controls;
 using PgOperator.App.ViewModels;
 
 namespace PgOperator.App.Views;
@@ -14,13 +14,13 @@ public partial class DeployView : UserControl
         DataContext = vm;
     }
 
-    private async void CheckEnv_Click(object sender, System.Windows.RoutedEventArgs e)
+    private async void CheckEnv_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         => await _vm.CheckEnvCommand.ExecuteAsync(null);
 
-    private async void InstallPg_Click(object sender, System.Windows.RoutedEventArgs e)
+    private async void InstallPg_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         => await _vm.InstallPgCommand.ExecuteAsync(null);
 
-    private void BackButton_Click(object sender, System.Windows.RoutedEventArgs e)
+    private void BackButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         var mainVm = App.Services.GetService(typeof(MainViewModel)) as MainViewModel;
         mainVm?.NavigateTo(App.Services.GetService(typeof(DashboardView))!);

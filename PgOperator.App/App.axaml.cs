@@ -86,8 +86,20 @@ public partial class App : Application
         services.AddTransient<AiSettingsViewModel>();
         services.AddTransient<DeployViewModel>();
 
-        // Views — registered in Phase 2 as each view is converted
-        // services.AddTransient<ServerListView>(); ...etc
+        // Views
+        services.AddTransient<Views.ServerListView>();
+        services.AddTransient<Views.DashboardView>();
+        services.AddTransient<Views.SqlQueryView>();
+        services.AddTransient<Views.UserManagementView>();
+        services.AddTransient<Views.ConfigManagementView>();
+        services.AddTransient<Views.DiagnoseView>();
+        services.AddTransient<Views.BackupView>();
+        services.AddTransient<Views.ReplicationView>();
+        services.AddTransient<Views.MaintenanceView>();
+        services.AddTransient<Views.ObjectBrowserView>();
+        services.AddTransient<Views.ImportExportView>();
+        services.AddTransient<Views.AiSettingsView>();
+        services.AddTransient<Views.DeployView>();
 
         Services = services.BuildServiceProvider();
         _serviceProvider = (ServiceProvider)Services;
@@ -104,7 +116,7 @@ public partial class App : Application
 
             var mainVm = Services.GetRequiredService<MainViewModel>();
             var mainWindow = new MainWindow { DataContext = mainVm };
-            // Navigation set in Phase 2 after views are converted
+            mainVm.NavigateTo(Services.GetRequiredService<Views.ServerListView>());
             desktop2.MainWindow = mainWindow;
         }
 

@@ -1,4 +1,5 @@
-using System.Windows;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
 using PgOperator.App.ViewModels;
 
 namespace PgOperator.App.Views;
@@ -12,7 +13,6 @@ public partial class PgConfigDialog : Window
     {
         InitializeComponent();
         _vm = vm;
-        // Default PG host to the server's SSH host (PG runs on the same machine)
         var serverHost = vm.SelectedServer?.Host ?? "localhost";
         var pg = vm.GetPgInstance();
         if (pg != null)
@@ -41,11 +41,11 @@ public partial class PgConfigDialog : Window
             await _vm.SavePgPasswordAsync(
                 PgHostBox.Text, port,
                 DatabaseBox.Text, UsernameBox.Text, PasswordBox.Text);
-            Saved = true; DialogResult = true; Close();
+            Saved = true; Close();
         }
         catch (Exception ex) { StatusText.Text = $"保存失败: {ex.Message}"; }
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
-    { DialogResult = false; Close(); }
+    { Close(); }
 }
