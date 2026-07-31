@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Threading;
 using PgOperator.Core.Interfaces;
 using PgOperator.Core.Models;
 
@@ -118,8 +119,8 @@ public partial class DeployViewModel : ObservableObject
                 Output = sb.ToString(); Status = desc + "...";
 
                 var r = await _ssh.ExecuteCommandWithProgressAsync(_server, cmd,
-                    onOutput: line => { System.Windows.Application.Current.Dispatcher.Invoke(() => { sb.AppendLine(line); Output = sb.ToString(); }); },
-                    onError: line => { System.Windows.Application.Current.Dispatcher.Invoke(() => { sb.AppendLine(line); Output = sb.ToString(); }); });
+                    onOutput: line => { Avalonia.Threading.Dispatcher.UIThread.Post(() => { sb.AppendLine(line); Output = sb.ToString(); }); },
+                    onError: line => { Avalonia.Threading.Dispatcher.UIThread.Post(() => { sb.AppendLine(line); Output = sb.ToString(); }); });
 
                 var sudoFailed = r.Output.Contains("incorrect password") || r.Output.Contains("try again");
                 if (r.Success && !sudoFailed)

@@ -1,0 +1,27 @@
+<Application x:Class="PgOperator.App.App"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:PgOperator.App.Converters"
+             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles">
+    <Application.Resources>
+        <!-- Converters (unchanged keys) -->
+        <converters:BoolToStatusIconConverter x:Key="BoolToStatusIconConverter" />
+        <converters:BoolToStatusColorConverter x:Key="BoolToStatusColorConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BoolToInverseConverter x:Key="BoolToInverseConverter" />
+        <converters:BoolToZeroVisibilityConverter x:Key="BoolToZeroVisibilityConverter" />
+        <converters:BoolToBackupTypeConverter x:Key="BoolToBackupTypeConverter" />
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <converters:StatusTextToColorConverter x:Key="StatusTextToColorConverter" />
+        <converters:SeverityToColorConverter x:Key="SeverityToColorConverter" />
+        <converters:SeverityToLabelConverter x:Key="SeverityToLabelConverter" />
+        <converters:SeverityToDetailVisibilityConverter x:Key="SeverityToDetailVisibilityConverter" />
+        <converters:SeverityToBackgroundConverter x:Key="SeverityToBackgroundConverter" />
+    </Application.Resources>
+
+    <Application.Styles>
+        <themes:MaterialTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Teal" />
+    </Application.Styles>
+</Application>

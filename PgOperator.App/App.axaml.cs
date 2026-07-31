@@ -1,8 +1,9 @@
 using System.IO;
-using System.Windows;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using PgOperator.App.ViewModels;
-using PgOperator.App.Views;
 using PgOperator.Core.Interfaces;
 using PgOperator.Core.Services;
 using PgOperator.Infra.Ssh;
@@ -10,20 +11,23 @@ using PgOperator.Infra.Storage;
 using PgOperator.Diagnostics;
 using PgOperator.AI;
 using Serilog;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 namespace PgOperator.App;
 
 public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
-
-    // [REVIEW-FIX] 保存 ServiceProvider 引用，在退出时正确释放 Singleton 资源（如 SSH 连接）
     private static ServiceProvider? _serviceProvider;
 
-    protected override void OnStartup(StartupEventArgs e)
+    public override void Initialize()
     {
-        base.OnStartup(e);
+        AvaloniaXamlLoader.Load(this);
+    }
 
+    public override void OnFrameworkInitializationCompleted()
+    {
         var logPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "PgOperator", "logs", "pgoperator-.log");
@@ -42,8 +46,6 @@ public partial class App : Application
 
         // Infrastructure
         var db = new DatabaseService(connectionString);
-        // [REVIEW-FIX] 保留 try-catch 保护，但回退为同步调用避免 async void OnStartup 导致
-        // WPF 在 Services 尚未初始化时就创建 MainWindow 的竞态问题
         try
         {
             db.InitializeAsync().GetAwaiter().GetResult();
@@ -51,8 +53,12 @@ public partial class App : Application
         catch (Exception ex)
         {
             Log.Fatal(ex, "数据库初始化失败，程序将退出");
-            MessageBox.Show($"数据库初始化失败:\n{ex.Message}", "启动错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            Shutdown(1);
+            var msgBox = MessageBoxManager.GetMessageBoxStandard("启动错误",
+                $"数据库初始化失败:\n{ex.Message}",
+                ButtonEnum.Ok, Icon.Error);
+            msgBox.ShowAsync().GetAwaiter().GetResult();
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                desktop.Shutdown(1);
             return;
         }
         services.AddSingleton<IDatabaseService>(db);
@@ -80,32 +86,35 @@ public partial class App : Application
         services.AddTransient<AiSettingsViewModel>();
         services.AddTransient<DeployViewModel>();
 
-        // Views
-        services.AddTransient<ServerListView>();
-        services.AddTransient<DashboardView>();
-        services.AddTransient<SqlQueryView>();
-        services.AddTransient<UserManagementView>();
-        services.AddTransient<ConfigManagementView>();
-        services.AddTransient<DiagnoseView>();
-        services.AddTransient<BackupView>();
-        services.AddTransient<ReplicationView>();
-        services.AddTransient<MaintenanceView>();
-        services.AddTransient<ObjectBrowserView>();
-        services.AddTransient<ImportExportView>();
-        services.AddTransient<AiSettingsView>();
-        services.AddTransient<DeployView>();
+        // Views — registered in Phase 2 as each view is converted
+        // services.AddTransient<ServerListView>(); ...etc
 
         Services = services.BuildServiceProvider();
         _serviceProvider = (ServiceProvider)Services;
         Log.Information("PgOperator started");
+
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
+        {
+            desktop2.Exit += (_, _) =>
+            {
+                Log.Information("PgOperator shutting down");
+                _serviceProvider?.Dispose();
+                Log.CloseAndFlush();
+            };
+
+            var mainVm = Services.GetRequiredService<MainViewModel>();
+            var mainWindow = new MainWindow { DataContext = mainVm };
+            // Navigation set in Phase 2 after views are converted
+            desktop2.MainWindow = mainWindow;
+        }
+
+        base.OnFrameworkInitializationCompleted();
     }
 
-    protected override void OnExit(ExitEventArgs e)
-    {
-        Log.Information("PgOperator shutting down");
-        // [REVIEW-FIX] 释放 DI 容器，确保 SshService 等 IDisposable Singleton 的连接被正确关闭
-        _serviceProvider?.Dispose();
-        Log.CloseAndFlush();
-        base.OnExit(e);
-    }
+    public static void Main(string[] args) => BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+
+    public static AppBuilder BuildAvaloniaApp()
+        => AppBuilder.Configure<App>()
+            .UsePlatformDetect()
+            .LogToTrace();
 }
