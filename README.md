@@ -1,6 +1,11 @@
 # PgOperator — PostgreSQL 运维管理工具
 
-Windows 桌面程序，通过 SSH 远程管理 Ubuntu/Debian 上的 PostgreSQL 数据库。
+跨平台桌面程序，通过 SSH 远程管理 Ubuntu/Debian 上的 PostgreSQL 数据库。
+
+![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue)
+![.NET](https://img.shields.io/badge/.NET-8.0%2B%20%7C%209.0%20SDK-purple)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Tests](https://img.shields.io/badge/tests-42%2F42-brightgreen)
 
 ## 功能模块
 
@@ -18,23 +23,39 @@ Windows 桌面程序，通过 SSH 远程管理 Ubuntu/Debian 上的 PostgreSQL �
 | 📁 对象浏览 | 数据库/表/索引/函数列表浏览 |
 | 📥 导入导出 | CSV 导入导出 (COPY 命令) |
 | ⏰ 定时任务 | 定时备份、定时诊断，支持 Cron 表达式 |
-| 🚨 告警规则 | 自定义告警指标和阈值，支持冷却期和通知 |
 
 ## 快速开始
 
 ### 环境要求
 
-- Windows 10/11 x64
+- macOS 14+ (ARM64) 或 Windows 10/11 x64
 - 目标服务器：Ubuntu 20.04+ / Debian 11+
-- .NET 8.0（自包含发布无需安装）
+- .NET 9.0 SDK（开发）/ 自包含发布无需安装运行时
+
+### 运行
+
+```bash
+# 开发运行（需要 .NET 9 SDK）
+git clone https://github.com/Diego-Yan/PgOperator.git
+cd PgOperator
+dotnet run --project PgOperator.App
+
+# macOS 发布版双击运行
+dotnet publish PgOperator.App -c Release -r osx-arm64 --self-contained true -o publish/osx-arm64
+bash bundle-macos.sh osx-arm64
+open publish/PgOperator.app
+
+# Windows 发布版
+dotnet publish PgOperator.App -c Release -r win-x64 --self-contained true -o publish/win-x64
+# 双击 publish/win-x64/PgOperator.App.exe
+```
 
 ### 使用步骤
 
-1. 双击 `PgOperator.App.exe` 启动
-2. 点击 `+` 添加服务器（SSH 地址/账号/密码，支持密码/密钥文件/密钥内容三种认证）
-3. 测试连接 → 点击 `▶ 进入`
-4. **配置PG密码** → 填入数据库连接信息
-5. 各功能入口按钮激活，开始使用
+1. 启动程序 → 点击 `+` 添加服务器（SSH 地址/账号/密码，支持密码/密钥文件/密钥内容三种认证）
+2. 测试连接 → 点击 `▶ 进入`
+3. **配置PG密码** → 填入数据库连接信息
+4. 各功能入口按钮激活，开始使用
 
 ### 首次部署 PG
 
@@ -68,21 +89,15 @@ Windows 桌面程序，通过 SSH 远程管理 Ubuntu/Debian 上的 PostgreSQL �
 
 支持 quick / standard / deep 三种诊断深度。
 
-## 安全说明
-
-- 个人工具，凭证明文存储在本地 SQLite 数据库（`%LocalAppData%\PgOperator\data\pgoperator.db`）
-- SSH 密码和 PG 密码在命令拼接时进行了 Shell 注入防护（单引号转义）
-- SQL 查询中的数据库名进行了 SQL 注入防护（单引号双写转义）
-- 物理备份需 pg_hba.conf 有 replication 条目（部署时自动配置）
-
 ## 技术栈
 
-- **UI**: WPF + MaterialDesignInXamlToolkit
+- **UI**: Avalonia 12 + Material.Avalonia（跨平台，macOS + Windows 像素级一致）
 - **架构**: MVVM (CommunityToolkit.Mvvm)
 - **SSH**: SSH.NET (Renci.SshNet)
 - **存储**: SQLite + Dapper
-- **日志**: Serilog (滚动文件，保存在 `%LocalAppData%\PgOperator\logs\`)
+- **日志**: Serilog (滚动文件)
 - **AI**: HttpClient 直连各 LLM API（OpenAI 兼容格式 + Claude Messages API）
+- **测试**: MSTest (42 个单元测试)
 
 ## 项目结构
 
@@ -92,25 +107,44 @@ PgOperator/
 ├── PgOperator.Infra/        # SSH（SshService）、存储（DatabaseService + DatabaseInitializer）
 ├── PgOperator.Diagnostics/  # 诊断引擎（3层33项检查 + MetricsSnapshot）
 ├── PgOperator.AI/           # AI 分析模块（多Provider：OpenAI兼容/Claude）
-├── PgOperator.App/          # WPF 界面（MainWindow + Views + ViewModels）
-├── PgOperator.Tests/        # 单元测试
-└── publish/                 # 自包含发布输出（win-x64）
+├── PgOperator.App/          # Avalonia 界面（MainWindow + Views + 16 ViewModels）
+├── PgOperator.Tests/        # 单元测试（42 tests）
+├── bundle-macos.sh          # macOS .app 打包脚本
+└── CLAUDE.md                # AI 辅助开发指南
 ```
 
 ## 构建发布
 
 ```bash
-dotnet publish PgOperator.App -c Release -r win-x64 --self-contained true -o publish
+# macOS ARM64
+dotnet publish PgOperator.App -c Release -r osx-arm64 --self-contained true -o publish/osx-arm64
+bash bundle-macos.sh osx-arm64
+
+# Windows x64
+dotnet publish PgOperator.App -c Release -r win-x64 --self-contained true -o publish/win-x64
 ```
 
-## 注意事项
+## 贡献
 
-- 个人工具，凭证明文存储在本地 SQLite 数据库中
-- 物理备份需 pg_hba.conf 有 replication 条目（部署时自动配置）
-- 导入导出使用 SQL COPY 命令，需 superuser 权限
-- 物理备份目录需用 `rm -rf` 删除（不是 `rm -f`）
-- 远程命令中 `$HOME` 变量在 C# `$""` 插值字符串中冲突，需用字符串拼接避免
+欢迎提交 Issue 和 PR！参与前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+### 开发环境
+
+```bash
+# 需要 .NET 9.0 SDK
+git clone https://github.com/Diego-Yan/PgOperator.git
+cd PgOperator
+dotnet build   # 首次编译
+dotnet test    # 运行 42 个单元测试
+dotnet run --project PgOperator.App  # 启动 GUI
+```
+
+### 代码提交流程
+
+1. Fork → 创建 feature 分支
+2. 确保 `dotnet test` 全部通过
+3. 提交 PR，描述改动内容和原因
 
 ## License
 
-MIT
+MIT — 欢迎自由使用、修改和分发。
