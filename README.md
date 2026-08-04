@@ -1,5 +1,7 @@
 # PgOperator — PostgreSQL 运维管理工具
 
+中文 | [English](README.en.md)
+
 跨平台桌面程序，通过 SSH 远程管理 Ubuntu/Debian 上的 PostgreSQL 数据库。
 
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue)

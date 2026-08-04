@@ -1,5 +1,7 @@
 # 参与贡献
 
+中文 | [English](CONTRIBUTING.en.md)
+
 感谢你对 PgOperator 的关注！欢迎任何形式的贡献。
 
 ## 如何参与
